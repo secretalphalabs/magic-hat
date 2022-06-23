@@ -9,7 +9,7 @@ pub use errors::CandyError;
 pub use processor::*;
 pub use state::*;
 pub use utils::*;
-declare_id!("9uX5aejHzv5nCc7pAZCBRkyLe8RKdHh225DxWpkKHx6h");
+declare_id!("WUFFcLvSqCsof9z2R6EEcAbKCVonrGN7j8eASVVofQ3");
 
 #[program]
 pub mod magic_hat {
