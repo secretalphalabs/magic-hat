@@ -435,6 +435,34 @@
           "type": "string"
         }
       ]
+    },
+    {
+      "name": "createWhitelistConfig",
+      "accounts": [
+        {
+          "name": "whitelistConfig",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "magicHatCreator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "whitelistSchedule",
+          "type": {
+            "defined": "WhitelistSchedule"
+          }
+        }
+      ]
     }
   ],
   "accounts": [
