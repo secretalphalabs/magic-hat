@@ -338,7 +338,7 @@
         },
         {
           "name": "whitelistConfig",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {

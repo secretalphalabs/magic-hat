@@ -48,10 +48,7 @@ pub struct WhitelistMintNFT<'info> {
         has_one = whitelisted_address, 
     )]
     pub wallet_whitelist: Account<'info, WalletWhitelist>,
-    #[account(
-        mut, 
-        has_one = magic_hat_creator, 
-    )]
+    #[account(has_one = magic_hat_creator)]
     pub whitelist_config: Account<'info, WhitelistConfig>,
 
     /// CHECK: account constraints checked in account trait
