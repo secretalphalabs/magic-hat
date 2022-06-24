@@ -324,6 +324,107 @@
       ]
     },
     {
+      "name": "wlMintNft",
+      "accounts": [
+        {
+          "name": "magicHat",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "walletWhitelist",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "whitelistConfig",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "magicHatCreator",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "whitelistedAddress",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "wallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "metadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mintAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "updateAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "masterEdition",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "clock",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "recentBlockhashes",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "instructionSysvarAccount",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "creatorBump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "setCollectionDuringMint",
       "accounts": [
         {

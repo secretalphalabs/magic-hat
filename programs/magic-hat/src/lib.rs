@@ -64,6 +64,13 @@ pub mod magic_hat {
         handle_mint_nft(ctx, creator_bump)
     }
 
+    pub fn wl_mint_nft<'info>(
+        ctx: Context<'_, '_, '_, 'info, WhitelistMintNFT<'info>>,
+        creator_bump: u8,
+    ) -> Result<()> {
+        handle_whitelist_mint_nft(ctx, creator_bump)
+    }
+
     pub fn set_collection_during_mint(ctx: Context<SetCollectionDuringMint>) -> Result<()> {
         handle_set_collection_during_mint(ctx)
     }
