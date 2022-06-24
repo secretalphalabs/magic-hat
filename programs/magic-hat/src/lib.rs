@@ -14,6 +14,8 @@ pub use errors::MagicHatError;
 pub use processor::*;
 pub use state::*;
 pub use utils::*;
+pub use whitelist_config::*;
+pub use whitelist_config_instructions::*;
 pub use whitelist_instructions::*;
 declare_id!("WUFFcLvSqCsof9z2R6EEcAbKCVonrGN7j8eASVVofQ3");
 
@@ -80,4 +82,10 @@ pub mod magic_hat {
     // pub fn decrease_whitelist_count(ctx: Context<DecreaseWhitelistSpots>, count: u8) -> Result<()> {
     //     whitelist_instructions::decrease_whitelist_count::handler(ctx, count)
     // }
+    pub fn create_whitelist_config(
+        ctx: Context<CreateWhitelistConfig>,
+        whitelist_schedule: WhitelistSchedule,
+    ) -> Result<()> {
+        whitelist_config_instructions::create_whitelist_config::handler(ctx, whitelist_schedule)
+    }
 }

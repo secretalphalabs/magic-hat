@@ -1,6 +1,18 @@
 use std::{cell::RefMut, ops::Deref};
 
+use crate::{
+    constants::{
+        A_TOKEN, BLOCK_HASHES, BOT_FEE, COLLECTIONS_FEATURE_INDEX, CONFIG_ARRAY_START,
+        CONFIG_LINE_SIZE, CUPCAKE_ID, EXPIRE_OFFSET, GUMDROP_ID, PREFIX,
+    },
+    utils::*,
+    wallet_whitelist::WalletWhitelist,
+    whitelist_config::WhitelistConfig,
+    ConfigLine, EndSettingType, MagicHat, MagicHatData, MagicHatError, WhitelistMintMode,
+    WhitelistMintSettings,
+};
 use anchor_lang::prelude::*;
+use anchor_lang::Discriminator;
 use anchor_spl::token::Token;
 use arrayref::array_ref;
 use mpl_token_metadata::{
@@ -19,16 +31,6 @@ use solana_program::{
     serialize_utils::{read_pubkey, read_u16},
     system_instruction, sysvar,
     sysvar::{instructions::get_instruction_relative, SysvarId},
-};
-
-use crate::{
-    constants::{
-        A_TOKEN, BLOCK_HASHES, BOT_FEE, COLLECTIONS_FEATURE_INDEX, CONFIG_ARRAY_START,
-        CONFIG_LINE_SIZE, CUPCAKE_ID, EXPIRE_OFFSET, GUMDROP_ID, PREFIX,
-    },
-    utils::*,
-    ConfigLine, EndSettingType, MagicHat, MagicHatData, MagicHatError, WhitelistMintMode,
-    WhitelistMintSettings,
 };
 
 /// Mint a new NFT pseudo-randomly from the config array.
@@ -106,6 +108,21 @@ pub fn handle_mint_nft<'info>(
     let instruction_sysvar_account_info = instruction_sysvar_account.to_account_info();
     let instruction_sysvar = instruction_sysvar_account_info.data.borrow();
     let current_ix = get_instruction_relative(0, &instruction_sysvar_account_info).unwrap();
+    msg!(
+        "&WhitelistProof::discriminator(){:?},{:?}",
+        &WalletWhitelist::discriminator(),
+        WalletWhitelist::discriminator()
+    );
+    msg!(
+        "&WhitelistProof::discriminator(){:?},{:?}",
+        &WhitelistConfig::discriminator(),
+        WalletWhitelist::discriminator()
+    );
+    msg!(
+        "&WhitelistProof::discriminator(){:?},{:?}",
+        &MagicHat::discriminator(),
+        WalletWhitelist::discriminator()
+    );
     if !ctx.accounts.metadata.data_is_empty() {
         return err!(MagicHatError::MetadataAccountMustBeEmpty);
     }

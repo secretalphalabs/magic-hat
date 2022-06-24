@@ -7,7 +7,7 @@ magic_hat = "WUFFcLvSqCsof9z2R6EEcAbKCVonrGN7j8eASVVofQ3"
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "devnet"
+cluster = "https://patient-twilight-paper.solana-devnet.quiknode.pro/eadc27f504cb9ae9ee9898c96270c29805781a2c/"
 wallet = "/home/abstracted/solana-wallet/dev1.json"
 
 [scripts]
