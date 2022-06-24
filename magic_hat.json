@@ -337,11 +337,6 @@
           "isSigner": false
         },
         {
-          "name": "whitelistConfig",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
           "name": "magicHatCreator",
           "isMut": false,
           "isSigner": false

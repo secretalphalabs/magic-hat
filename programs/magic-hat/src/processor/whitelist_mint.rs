@@ -29,7 +29,6 @@ use crate::{
     },
     utils::*,
     wallet_whitelist::*,
-    whitelist_config::*,
     ConfigLine, EndSettingType, MagicHat, MagicHatData, MagicHatError, WhitelistMintMode,
     WhitelistMintSettings, 
 };
@@ -48,8 +47,6 @@ pub struct WhitelistMintNFT<'info> {
         has_one = whitelisted_address, 
     )]
     pub wallet_whitelist: Account<'info, WalletWhitelist>,
-    #[account(has_one = magic_hat_creator)]
-    pub whitelist_config: Account<'info, WhitelistConfig>,
 
     /// CHECK: account constraints checked in account trait
     #[account(seeds=[PREFIX.as_bytes(), magic_hat.key().as_ref()], bump=creator_bump)]
