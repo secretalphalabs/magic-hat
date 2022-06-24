@@ -666,15 +666,6 @@
           {
             "name": "specialDiscountedPrice",
             "type": "u64"
-          },
-          {
-            "name": "reserved",
-            "type": {
-              "array": [
-                "u8",
-                3
-              ]
-            }
           }
         ]
       }
@@ -1216,6 +1207,6 @@
     }
   ],
   "metadata": {
-    "address": "C52UybC2ucG3BaJY2JRKi1aNZFyJ3iMh82qv8shxqynS"
+    "address": "8TGHbF5yHpbeDjKWzhkehKTXVyymZe1EifjZ36oiueBE"
   }
 }
