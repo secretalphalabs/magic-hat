@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "magic_hat",
   "instructions": [
     {
@@ -1083,5 +1083,8 @@
       "name": "MagicHatCollectionRequiresRetainAuthority",
       "msg": "Retain authority must be true for Magic hats with a collection set"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "WUFFcLvSqCsof9z2R6EEcAbKCVonrGN7j8eASVVofQ3"
+  }
 }
