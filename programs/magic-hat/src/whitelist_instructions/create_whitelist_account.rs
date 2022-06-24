@@ -11,24 +11,20 @@ pub struct CreateWhitelistAccount<'info> {
         seeds = [b"wallet-whitelist".as_ref(), whitelisted_address.key().as_ref()], 
         bump
     )]
-    pub wallet_whitelist: Account<'info, WalletWhitelist>,
+    wallet_whitelist: Account<'info, WalletWhitelist>,
     #[account(has_one = magic_hat_creator,
     //     seeds = [b"whitelist-config".as_ref(), magic_hat_creator.key().as_ref()],
     //     bump = bump_config,
     )]
     whitelist_config: Account<'info, WhitelistConfig>,
     /// CHECK:
-    pub whitelisted_address: AccountInfo<'info>,
+    whitelisted_address: AccountInfo<'info>,
     #[account(mut, address = whitelist_config.magic_hat_creator)]
-    pub magic_hat_creator: Signer<'info>,
-    pub system_program: Program<'info, System>,
+    magic_hat_creator: Signer<'info>,
+    system_program: Program<'info, System>,
 }
 
 pub fn handler(ctx: Context<CreateWhitelistAccount>, whitelist_type: String) -> Result<()>{
-    msg!(
-        "whitelist_type{:?}",
-        whitelist_type,
-    );
     let wallet_whitelist = &mut ctx.accounts.wallet_whitelist;
     let whitelist_config = &ctx.accounts.whitelist_config;
     wallet_whitelist.whitelisted_address = ctx.accounts.whitelisted_address.key();

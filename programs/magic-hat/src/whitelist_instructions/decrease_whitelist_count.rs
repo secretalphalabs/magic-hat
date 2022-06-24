@@ -9,11 +9,11 @@ pub struct DecreaseWhitelistSpots<'info> {
         // seeds = [b"wallet-whitelist", wallet_whitelist_account.whitelist_type.to_string().as_bytes() , whitelisted_address.key().as_ref(), magic_hat_id.key().as_ref()], 
         // bump = wallet_whitelist_account.bump
     )]
-    pub wallet_whitelist_account: Box<Account<'info, WalletWhitelist>>,
+    wallet_whitelist_account: Box<Account<'info, WalletWhitelist>>,
     /// CHECK:
     #[account(constraint = wallet_whitelist_account.whitelisted_address == whitelisted_address.key())]
-    pub whitelisted_address: AccountInfo<'info>,
-    // pub whitelisted_address: Signer<'info>,
+    whitelisted_address: AccountInfo<'info>,
+    // whitelisted_address: Signer<'info>,
 }
 
 pub fn handler(ctx: Context<DecreaseWhitelistSpots>, count: u64) -> Result<()> {
