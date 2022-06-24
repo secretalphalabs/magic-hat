@@ -3,7 +3,7 @@
   "name": "magic_hat",
   "instructions": [
     {
-      "name": "initializemagicHat",
+      "name": "initializeMagicHat",
       "accounts": [
         {
           "name": "magicHat",
@@ -40,13 +40,13 @@
         {
           "name": "data",
           "type": {
-            "defined": "magicHatData"
+            "defined": "MagicHatData"
           }
         }
       ]
     },
     {
-      "name": "updatemagicHat",
+      "name": "updateMagicHat",
       "accounts": [
         {
           "name": "magicHat",
@@ -68,7 +68,7 @@
         {
           "name": "data",
           "type": {
-            "defined": "magicHatData"
+            "defined": "MagicHatData"
           }
         }
       ]
@@ -399,11 +399,47 @@
         }
       ],
       "args": []
+    },
+    {
+      "name": "createWhitelistAccount",
+      "accounts": [
+        {
+          "name": "walletWhitelist",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "whitelistConfig",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "whitelistedAddress",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "magicHatCreator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "whitelistType",
+          "type": "string"
+        }
+      ]
     }
   ],
   "accounts": [
     {
-      "name": "magicHat",
+      "name": "MagicHat",
       "type": {
         "kind": "struct",
         "fields": [
@@ -428,7 +464,7 @@
           {
             "name": "data",
             "type": {
-              "defined": "magicHatData"
+              "defined": "MagicHatData"
             }
           }
         ]
@@ -449,11 +485,76 @@
           }
         ]
       }
+    },
+    {
+      "name": "WalletWhitelist",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "magicHatCreator",
+            "type": "publicKey"
+          },
+          {
+            "name": "whitelistedAddress",
+            "type": "publicKey"
+          },
+          {
+            "name": "whitelistType",
+            "type": {
+              "defined": "WLType"
+            }
+          },
+          {
+            "name": "numberOfWhitelistSpots",
+            "type": "u64"
+          },
+          {
+            "name": "specialDiscountedPrice",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                3
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "WhitelistConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "whitelistSchedule",
+            "type": {
+              "defined": "WhitelistSchedule"
+            }
+          },
+          {
+            "name": "magicHatCreator",
+            "type": "publicKey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
     }
   ],
   "types": [
     {
-      "name": "magicHatData",
+      "name": "MagicHatData",
       "type": {
         "kind": "struct",
         "fields": [
@@ -662,6 +763,70 @@
       }
     },
     {
+      "name": "WhitelistTierConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "whitelistType",
+            "type": {
+              "defined": "WLType"
+            }
+          },
+          {
+            "name": "numberOfWhitelistSpotsTotal",
+            "type": "u64"
+          },
+          {
+            "name": "mintPrice",
+            "type": "u64"
+          },
+          {
+            "name": "startTime",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WhitelistSchedule",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wlStartTime4",
+            "type": {
+              "defined": "WhitelistTierConfig"
+            }
+          },
+          {
+            "name": "wlStartTime3",
+            "type": {
+              "defined": "WhitelistTierConfig"
+            }
+          },
+          {
+            "name": "wlStartTime2",
+            "type": {
+              "defined": "WhitelistTierConfig"
+            }
+          },
+          {
+            "name": "wlStartTime1",
+            "type": {
+              "defined": "WhitelistTierConfig"
+            }
+          },
+          {
+            "name": "publicMintStartTime",
+            "type": {
+              "defined": "WhitelistTierConfig"
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "EndSettingType",
       "type": {
         "kind": "enum",
@@ -685,6 +850,58 @@
           },
           {
             "name": "NeverBurn"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WLType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Four"
+          },
+          {
+            "name": "Three"
+          },
+          {
+            "name": "Two"
+          },
+          {
+            "name": "One"
+          },
+          {
+            "name": "Null"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WhitelistErrorCode",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "NotEnoughBalance"
+          },
+          {
+            "name": "InvalidNumberofWL"
+          },
+          {
+            "name": "InvalidWLType"
+          },
+          {
+            "name": "WL1NotScheduled"
+          },
+          {
+            "name": "WL2NotScheduled"
+          },
+          {
+            "name": "WL3NotScheduled"
+          },
+          {
+            "name": "WL4NotScheduled"
           }
         ]
       }
@@ -743,12 +960,12 @@
     },
     {
       "code": 6010,
-      "name": "magicHatEmpty",
+      "name": "MagicHatEmpty",
       "msg": "Magic hat is empty!"
     },
     {
       "code": 6011,
-      "name": "magicHatNotLive",
+      "name": "MagicHatNotLive",
       "msg": "Magic hat is not live!"
     },
     {
@@ -866,11 +1083,5 @@
       "name": "MagicHatCollectionRequiresRetainAuthority",
       "msg": "Retain authority must be true for Magic hats with a collection set"
     }
-  ],
-  "metadata": {
-    "address": "WUFFcLvSqCsof9z2R6EEcAbKCVonrGN7j8eASVVofQ3",
-    "origin": "anchor",
-    "binaryVersion": "0.24.2",
-    "libVersion": "0.24.2"
-  }
+  ]
 }
