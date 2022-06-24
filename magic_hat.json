@@ -558,10 +558,40 @@
       ],
       "args": [
         {
-          "name": "whitelistSchedule",
-          "type": {
-            "defined": "WhitelistSchedule"
-          }
+          "name": "wlStartTime3WlSpots",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime3WlMp",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime3WlSt",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime2WlSpots",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime2WlMp",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime2WlSt",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime1WlSpots",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime1WlMp",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime1WlSt",
+          "type": "u64"
         }
       ]
     }
@@ -935,12 +965,6 @@
             "type": {
               "defined": "WhitelistTierConfig"
             }
-          },
-          {
-            "name": "publicMintStartTime",
-            "type": {
-              "defined": "WhitelistTierConfig"
-            }
           }
         ]
       }
@@ -978,9 +1002,6 @@
       "type": {
         "kind": "enum",
         "variants": [
-          {
-            "name": "Four"
-          },
           {
             "name": "Three"
           },

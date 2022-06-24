@@ -91,8 +91,27 @@ pub mod magic_hat {
     // }
     pub fn create_whitelist_config(
         ctx: Context<CreateWhitelistConfig>,
-        whitelist_schedule: WhitelistSchedule,
+        wl_start_time_3_wl_spots: u64,
+        wl_start_time_3_wl_mp: u64,
+        wl_start_time_3_wl_st: u64,
+        wl_start_time_2_wl_spots: u64,
+        wl_start_time_2_wl_mp: u64,
+        wl_start_time_2_wl_st: u64,
+        wl_start_time_1_wl_spots: u64,
+        wl_start_time_1_wl_mp: u64,
+        wl_start_time_1_wl_st: u64,
     ) -> Result<()> {
-        whitelist_config_instructions::create_whitelist_config::handler(ctx, whitelist_schedule)
+        whitelist_config_instructions::create_whitelist_config::handler(
+            ctx,
+            wl_start_time_3_wl_spots,
+            wl_start_time_3_wl_mp,
+            wl_start_time_3_wl_st,
+            wl_start_time_2_wl_spots,
+            wl_start_time_2_wl_mp,
+            wl_start_time_2_wl_st,
+            wl_start_time_1_wl_spots,
+            wl_start_time_1_wl_mp,
+            wl_start_time_1_wl_st,
+        )
     }
 }

@@ -6,16 +6,12 @@ use crate::{
         CONFIG_LINE_SIZE, CUPCAKE_ID, EXPIRE_OFFSET, GUMDROP_ID, PREFIX,
     },
     utils::*,
-    wallet_whitelist::WalletWhitelist,
-    whitelist_config::WhitelistConfig,
     ConfigLine, EndSettingType, MagicHat, MagicHatData, MagicHatError, WhitelistMintMode,
     WhitelistMintSettings,
 };
 use anchor_lang::prelude::*;
-use anchor_lang::Discriminator;
 use anchor_spl::token::Token;
 use arrayref::array_ref;
-use mpl_candy_machine::CandyMachine;
 use mpl_token_metadata::{
     instruction::{
         create_master_edition_v3, create_metadata_accounts_v2, update_metadata_accounts_v2,
@@ -108,26 +104,6 @@ pub fn handle_mint_nft<'info>(
     let instruction_sysvar_account_info = instruction_sysvar_account.to_account_info();
     let instruction_sysvar = instruction_sysvar_account_info.data.borrow();
     let current_ix = get_instruction_relative(0, &instruction_sysvar_account_info).unwrap();
-    msg!(
-        "&WalletWhitelist::discriminator(){:?},{:?}",
-        &WalletWhitelist::discriminator(),
-        WalletWhitelist::discriminator()
-    );
-    msg!(
-        "&WhitelistConfig::discriminator(){:?},{:?}",
-        &WhitelistConfig::discriminator(),
-        WhitelistConfig::discriminator()
-    );
-    msg!(
-        "&MagicHat::discriminator(){:?},{:?}",
-        &MagicHat::discriminator(),
-        MagicHat::discriminator()
-    );
-    msg!(
-        "&CandyMachine::discriminator(){:?},{:?}",
-        &CandyMachine::discriminator(),
-        CandyMachine::discriminator()
-    );
     if !ctx.accounts.metadata.data_is_empty() {
         return err!(MagicHatError::MetadataAccountMustBeEmpty);
     }

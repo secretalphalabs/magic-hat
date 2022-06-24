@@ -1,5 +1,6 @@
 use crate::whitelist_config::*;
 use anchor_lang::prelude::*;
+use crate::wallet_whitelist::*;
 
 #[derive(Accounts)]
 pub struct CreateWhitelistConfig<'info> {
@@ -15,7 +16,37 @@ pub struct CreateWhitelistConfig<'info> {
     system_program: Program<'info, System>,
 }
 
-pub fn handler(ctx: Context<CreateWhitelistConfig>, whitelist_schedule: WhitelistSchedule) -> Result<()> {
+//pub fn handler(ctx: Context<CreateWhitelistConfig>, whitelist_schedule: WhitelistSchedule) -> Result<()> {
+pub fn handler(ctx: Context<CreateWhitelistConfig>, 
+            wl_start_time_3_wl_spots: u64, 
+            wl_start_time_3_wl_mp: u64, 
+            wl_start_time_3_wl_st: u64,  
+            wl_start_time_2_wl_spots: u64, 
+            wl_start_time_2_wl_mp: u64, 
+            wl_start_time_2_wl_st: u64,  
+            wl_start_time_1_wl_spots: u64, 
+            wl_start_time_1_wl_mp: u64, 
+            wl_start_time_1_wl_st: u64, ) -> Result<()> {
+    let whitelist_schedule =  WhitelistSchedule{
+        wl_start_time_3: WhitelistTierConfig{
+            whitelist_type: WLType::Three,
+            number_of_whitelist_spots_total: wl_start_time_3_wl_spots,
+            mint_price: wl_start_time_3_wl_mp,
+            start_time: wl_start_time_3_wl_st,
+        }, 
+        wl_start_time_2: WhitelistTierConfig{
+            whitelist_type: WLType::Two,
+            number_of_whitelist_spots_total: wl_start_time_2_wl_spots,
+            mint_price: wl_start_time_2_wl_mp,
+            start_time: wl_start_time_2_wl_st,
+        }, 
+        wl_start_time_1: WhitelistTierConfig{
+            whitelist_type: WLType::One,
+            number_of_whitelist_spots_total: wl_start_time_1_wl_spots,
+            mint_price: wl_start_time_1_wl_mp,
+            start_time: wl_start_time_1_wl_st,
+        },  
+    };
     msg!(
         "whitelist_schedule{:?}",
         whitelist_schedule,

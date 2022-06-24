@@ -28,7 +28,6 @@ solana-gateway = "0.2.0"
 proc_macros = {path='../../lib/proc_macros'}
 common = {path='../../lib/common'}
 static_assertions = "1.1.0"
-mpl-candy-machine = { version = "4.0.0", features = ["no-entrypoint"] }
 
 
 [dev-dependencies]

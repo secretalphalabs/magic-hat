@@ -6,7 +6,6 @@ use std::fmt::Debug;
 #[repr(C)]
 #[derive(Debug, Clone, Copy, AnchorDeserialize, AnchorSerialize, PartialEq, PartialOrd)]
 pub enum WLType {
-    Four,
     Three,
     Two,
     One,
