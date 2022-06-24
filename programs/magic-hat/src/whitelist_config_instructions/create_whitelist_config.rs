@@ -25,6 +25,5 @@ pub fn handler(ctx: Context<CreateWhitelistConfig>, whitelist_schedule: Whitelis
     whitelist_schedule.verify_schedule_invariants();
     whitelist_config.whitelist_schedule = whitelist_schedule;
     whitelist_config.magic_hat_creator = ctx.accounts.magic_hat_creator.key();
-    whitelist_config.bump = *ctx.bumps.get("whitelist_config").unwrap();
     Ok(())
 }

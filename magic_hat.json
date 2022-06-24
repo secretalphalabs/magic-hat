@@ -672,10 +672,6 @@
           {
             "name": "magicHatCreator",
             "type": "publicKey"
-          },
-          {
-            "name": "bump",
-            "type": "u8"
           }
         ]
       }

@@ -15,8 +15,8 @@ pub struct CreateWhitelistAccount<'info> {
     pub wallet_whitelist: Account<'info, WalletWhitelist>,
     #[account(mut, 
         has_one = magic_hat_creator,
-        seeds = [b"whitelist-config".as_ref(), magic_hat_creator.key().as_ref()],
-        bump = whitelist_config.bump,
+    //     seeds = [b"whitelist-config".as_ref(), magic_hat_creator.key().as_ref()],
+    //     bump = bump_config,
     )]
     whitelist_config: Account<'info, WhitelistConfig>,
     /// CHECK:
@@ -26,7 +26,7 @@ pub struct CreateWhitelistAccount<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn handler(ctx: Context<CreateWhitelistAccount>, whitelist_type: String ) -> Result<()>{
+pub fn handler(ctx: Context<CreateWhitelistAccount>, whitelist_type: String) -> Result<()>{
     msg!(
         "whitelist_type{:?}",
         whitelist_type,
