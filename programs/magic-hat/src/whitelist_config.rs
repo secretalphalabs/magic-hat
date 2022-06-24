@@ -1,7 +1,7 @@
 use crate::wallet_whitelist::WLType;
 use anchor_lang::prelude::*;
 
-#[proc_macros::assert_size(200)]
+#[proc_macros::assert_size(168)]
 #[repr(C)]
 #[account]
 pub struct WhitelistConfig {
@@ -20,11 +20,10 @@ pub struct WhitelistTierConfig {
     pub start_time: u64,
 }
 
-#[proc_macros::assert_size(160)]
+#[proc_macros::assert_size(128)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, AnchorDeserialize, AnchorSerialize)]
 pub struct WhitelistSchedule {
-    pub wl_start_time_4: WhitelistTierConfig,
     pub wl_start_time_3: WhitelistTierConfig,
     pub wl_start_time_2: WhitelistTierConfig,
     pub wl_start_time_1: WhitelistTierConfig,
@@ -36,7 +35,6 @@ impl WhitelistSchedule {
         assert!(public_mint_start_time >= self.wl_start_time_1.start_time);
         assert!(self.wl_start_time_1.start_time >= self.wl_start_time_2.start_time);
         assert!(self.wl_start_time_2.start_time >= self.wl_start_time_3.start_time);
-        assert!(self.wl_start_time_3.start_time >= self.wl_start_time_4.start_time);
     }
     // pub fn verify_schedule_invariants(&self) {
     //     let public_mint_start_time = self.public_mint_start_time.start_time;

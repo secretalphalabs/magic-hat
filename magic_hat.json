@@ -923,12 +923,6 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "wlStartTime4",
-            "type": {
-              "defined": "WhitelistTierConfig"
-            }
-          },
-          {
             "name": "wlStartTime3",
             "type": {
               "defined": "WhitelistTierConfig"

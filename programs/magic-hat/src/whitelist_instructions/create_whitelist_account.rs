@@ -27,6 +27,10 @@ pub struct CreateWhitelistAccount<'info> {
 }
 
 pub fn handler(ctx: Context<CreateWhitelistAccount>, whitelist_type: String ) -> Result<()>{
+    msg!(
+        "whitelist_type{:?}",
+        whitelist_type,
+    );
     let wallet_whitelist = &mut ctx.accounts.wallet_whitelist;
     let whitelist_config = &mut ctx.accounts.whitelist_config;
     wallet_whitelist.whitelisted_address = ctx.accounts.whitelisted_address.key();
@@ -46,11 +50,6 @@ pub fn handler(ctx: Context<CreateWhitelistAccount>, whitelist_type: String ) ->
             wallet_whitelist.whitelist_type = WLType::Three;
             wallet_whitelist.number_of_whitelist_spots = 3;
             wallet_whitelist.special_discounted_price = whitelist_config.whitelist_schedule.wl_start_time_3.mint_price;
-        }
-        "Four" => {
-            wallet_whitelist.whitelist_type = WLType::Four;
-            wallet_whitelist.number_of_whitelist_spots = 4;
-            wallet_whitelist.special_discounted_price = whitelist_config.whitelist_schedule.wl_start_time_4.mint_price;
         }
     _ => return Err(error!(WhitelistErrorCode::InvalidWLType)),
     }

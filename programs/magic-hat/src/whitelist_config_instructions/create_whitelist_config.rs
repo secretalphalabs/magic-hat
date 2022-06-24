@@ -16,6 +16,11 @@ pub struct CreateWhitelistConfig<'info> {
 }
 
 pub fn handler(ctx: Context<CreateWhitelistConfig>, whitelist_schedule: WhitelistSchedule) -> Result<()> {
+    msg!(
+        "whitelist_schedule{:?}",
+        whitelist_schedule,
+    );
+    
     let whitelist_config = &mut ctx.accounts.whitelist_config;
     whitelist_schedule.verify_schedule_invariants();
     whitelist_config.whitelist_schedule = whitelist_schedule;

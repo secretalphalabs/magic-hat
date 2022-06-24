@@ -15,6 +15,7 @@ use anchor_lang::prelude::*;
 use anchor_lang::Discriminator;
 use anchor_spl::token::Token;
 use arrayref::array_ref;
+use mpl_candy_machine::CandyMachine;
 use mpl_token_metadata::{
     instruction::{
         create_master_edition_v3, create_metadata_accounts_v2, update_metadata_accounts_v2,
@@ -32,7 +33,6 @@ use solana_program::{
     system_instruction, sysvar,
     sysvar::{instructions::get_instruction_relative, SysvarId},
 };
-
 /// Mint a new NFT pseudo-randomly from the config array.
 #[derive(Accounts)]
 #[instruction(creator_bump: u8)]
@@ -109,19 +109,24 @@ pub fn handle_mint_nft<'info>(
     let instruction_sysvar = instruction_sysvar_account_info.data.borrow();
     let current_ix = get_instruction_relative(0, &instruction_sysvar_account_info).unwrap();
     msg!(
-        "&WhitelistProof::discriminator(){:?},{:?}",
+        "&WalletWhitelist::discriminator(){:?},{:?}",
         &WalletWhitelist::discriminator(),
         WalletWhitelist::discriminator()
     );
     msg!(
-        "&WhitelistProof::discriminator(){:?},{:?}",
+        "&WhitelistConfig::discriminator(){:?},{:?}",
         &WhitelistConfig::discriminator(),
-        WalletWhitelist::discriminator()
+        WhitelistConfig::discriminator()
     );
     msg!(
-        "&WhitelistProof::discriminator(){:?},{:?}",
+        "&MagicHat::discriminator(){:?},{:?}",
         &MagicHat::discriminator(),
-        WalletWhitelist::discriminator()
+        MagicHat::discriminator()
+    );
+    msg!(
+        "&CandyMachine::discriminator(){:?},{:?}",
+        &CandyMachine::discriminator(),
+        CandyMachine::discriminator()
     );
     if !ctx.accounts.metadata.data_is_empty() {
         return err!(MagicHatError::MetadataAccountMustBeEmpty);

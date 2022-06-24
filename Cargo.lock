@@ -1709,6 +1709,7 @@ dependencies = [
  "arrayref",
  "borsh 0.9.3",
  "common",
+ "mpl-candy-machine",
  "mpl-token-metadata",
  "proc_macros",
  "solana-gateway",
@@ -1785,6 +1786,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b9f1c5b025cda876f66ef43a113f91ebc9f4ccef34843000e0adf6ebbab84e21"
 dependencies = [
  "winapi",
+]
+
+[[package]]
+name = "mpl-candy-machine"
+version = "4.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0fed8c4280024581a6c8a3ca7d18a5103e8c8fd030e2164177b75afe3ab2a488"
+dependencies = [
+ "anchor-lang",
+ "anchor-spl",
+ "arrayref",
+ "mpl-token-metadata",
+ "solana-gateway",
+ "solana-program",
+ "spl-associated-token-account",
+ "spl-token",
 ]
 
 [[package]]
