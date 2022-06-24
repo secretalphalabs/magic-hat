@@ -4,12 +4,11 @@ use crate::whitelist_config::*;
 use crate::whitelist_errors::WhitelistErrorCode;
 
 #[derive(Accounts)]
-#[instruction( whitelist_type: String)]
 pub struct CreateWhitelistAccount<'info> {
     #[account(init_if_needed, 
         payer = magic_hat_creator, 
         space = 8 + std::mem::size_of::<WalletWhitelist>(),
-        seeds = [b"wallet-whitelist".as_ref(), whitelist_type.to_string().as_bytes(), whitelisted_address.key().as_ref()], 
+        seeds = [b"wallet-whitelist".as_ref(), whitelisted_address.key().as_ref()], 
         bump
     )]
     pub wallet_whitelist: Account<'info, WalletWhitelist>,
