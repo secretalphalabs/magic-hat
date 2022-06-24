@@ -28,6 +28,5 @@ pub struct WalletWhitelist {
     pub whitelist_type: WLType,         //4
     pub number_of_whitelist_spots: u64, //8
     pub special_discounted_price: u64,  //8
-    pub bump: u8,                       //1
     _reserved: [u8; 3],                 //3
 }

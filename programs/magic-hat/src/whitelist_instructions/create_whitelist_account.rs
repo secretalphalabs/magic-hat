@@ -13,8 +13,7 @@ pub struct CreateWhitelistAccount<'info> {
         bump
     )]
     pub wallet_whitelist: Account<'info, WalletWhitelist>,
-    #[account(mut, 
-        has_one = magic_hat_creator,
+    #[account(has_one = magic_hat_creator,
     //     seeds = [b"whitelist-config".as_ref(), magic_hat_creator.key().as_ref()],
     //     bump = bump_config,
     )]
@@ -32,7 +31,7 @@ pub fn handler(ctx: Context<CreateWhitelistAccount>, whitelist_type: String) -> 
         whitelist_type,
     );
     let wallet_whitelist = &mut ctx.accounts.wallet_whitelist;
-    let whitelist_config = &mut ctx.accounts.whitelist_config;
+    let whitelist_config = &ctx.accounts.whitelist_config;
     wallet_whitelist.whitelisted_address = ctx.accounts.whitelisted_address.key();
     wallet_whitelist.magic_hat_creator = ctx.accounts.magic_hat_creator.key();
     match whitelist_type.as_str() {
@@ -53,6 +52,5 @@ pub fn handler(ctx: Context<CreateWhitelistAccount>, whitelist_type: String) -> 
         }
     _ => return Err(error!(WhitelistErrorCode::InvalidWLType)),
     }
-    wallet_whitelist.bump = *ctx.bumps.get("wallet_whitelist_account").unwrap();
     Ok(())
 }
