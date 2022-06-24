@@ -1,3 +1,4 @@
+use common::*;
 use std::{cell::RefMut, ops::Deref};
 
 use anchor_lang::prelude::*;
@@ -27,6 +28,7 @@ use crate::{
         CONFIG_LINE_SIZE, CUPCAKE_ID, EXPIRE_OFFSET, GUMDROP_ID, PREFIX,
     },
     utils::*,
+    wallet_whitelist::*,
     ConfigLine, EndSettingType, MagicHat, MagicHatData, MagicHatError, WhitelistMintMode,
     WhitelistMintSettings,
 };
@@ -34,16 +36,23 @@ use crate::{
 /// Mint a new NFT pseudo-randomly from the config array.
 #[derive(Accounts)]
 #[instruction(creator_bump: u8)]
-pub struct MintNFT<'info> {
+pub struct WhitelistMintNFT<'info> {
     #[account(
     mut,
     has_one = wallet
     )]
     magic_hat: Box<Account<'info, MagicHat>>,
+    #[account(
+        mut, 
+        has_one = whitelisted_address, 
+        has_one = magic_hat
+    )]
+    pub wallet_whitelist_account: Account<'info, WalletWhitelist>,
+
     /// CHECK: account constraints checked in account trait
     #[account(seeds=[PREFIX.as_bytes(), magic_hat.key().as_ref()], bump=creator_bump)]
     magic_hat_creator: UncheckedAccount<'info>,
-    payer: Signer<'info>,
+    whitelisted_address: Signer<'info>,
     /// CHECK: wallet can be any account and is not written to or read
     #[account(mut)]
     wallet: UncheckedAccount<'info>,
@@ -89,15 +98,17 @@ pub struct MintNFT<'info> {
     // transfer_authority_info
 }
 
-pub fn handle_mint_nft<'info>(
-    ctx: Context<'_, '_, '_, 'info, MintNFT<'info>>,
+pub fn handle_whitelist_mint_nft<'info>(
+    ctx: Context<'_, '_, '_, 'info, WhitelistMintNFT<'info>>,
     creator_bump: u8,
 ) -> Result<()> {
     let magic_hat = &mut ctx.accounts.magic_hat;
+    let wallet_whitelist_account = &mut ctx.accounts.wallet_whitelist_account;
+
     let magic_hat_creator = &ctx.accounts.magic_hat_creator;
     // Note this is the wallet of the Magic hat
     let wallet = &ctx.accounts.wallet;
-    let payer = &ctx.accounts.payer;
+    let payer = &ctx.accounts.whitelisted_address;
     let token_program = &ctx.accounts.token_program;
     let clock = Clock::get()?;
     //Account name the same for IDL compatability
@@ -196,7 +207,7 @@ pub fn handle_mint_nft<'info>(
         match es.end_setting_type {
             EndSettingType::Date => {
                 if clock.unix_timestamp > es.number as i64
-                    && !cmp_pubkeys(&ctx.accounts.payer.key(), &magic_hat.authority)
+                    && !cmp_pubkeys(&ctx.accounts.whitelisted_address.key(), &magic_hat.authority)
                 {
                     punish_bots(
                         MagicHatError::MagicHatNotLive,
@@ -210,7 +221,7 @@ pub fn handle_mint_nft<'info>(
             }
             EndSettingType::Amount => {
                 if magic_hat.items_redeemed >= es.number {
-                    if !cmp_pubkeys(&ctx.accounts.payer.key(), &magic_hat.authority) {
+                    if !cmp_pubkeys(&ctx.accounts.whitelisted_address.key(), &magic_hat.authority) {
                         punish_bots(
                             MagicHatError::MagicHatEmpty,
                             payer.to_account_info(),
@@ -303,7 +314,7 @@ pub fn handle_mint_nft<'info>(
                 if wta.amount > 0 {
                     match magic_hat.data.go_live_date {
                         None => {
-                            if !cmp_pubkeys(&ctx.accounts.payer.key(), &magic_hat.authority)
+                            if !cmp_pubkeys(&ctx.accounts.whitelisted_address.key(), &magic_hat.authority)
                                 && !ws.presale
                             {
                                 punish_bots(
@@ -318,7 +329,7 @@ pub fn handle_mint_nft<'info>(
                         }
                         Some(val) => {
                             if clock.unix_timestamp < val
-                                && !cmp_pubkeys(&ctx.accounts.payer.key(), &magic_hat.authority)
+                                && !cmp_pubkeys(&ctx.accounts.whitelisted_address.key(), &magic_hat.authority)
                                 && !ws.presale
                             {
                                 punish_bots(
@@ -476,14 +487,14 @@ pub fn handle_mint_nft<'info>(
             amount: price,
         })?;
     } else {
-        if ctx.accounts.payer.lamports() < price {
+        if ctx.accounts.whitelisted_address.lamports() < price {
             return err!(MagicHatError::NotEnoughSOL);
         }
 
         invoke(
-            &system_instruction::transfer(&ctx.accounts.payer.key(), &wallet.key(), price),
+            &system_instruction::transfer(&ctx.accounts.whitelisted_address.key(), &wallet.key(), price),
             &[
-                ctx.accounts.payer.to_account_info(),
+                ctx.accounts.whitelisted_address.to_account_info(),
                 wallet.to_account_info(),
                 ctx.accounts.system_program.to_account_info(),
             ],
@@ -527,7 +538,7 @@ pub fn handle_mint_nft<'info>(
         ctx.accounts.metadata.to_account_info(),
         ctx.accounts.mint.to_account_info(),
         ctx.accounts.mint_authority.to_account_info(),
-        ctx.accounts.payer.to_account_info(),
+        ctx.accounts.whitelisted_address.to_account_info(),
         ctx.accounts.token_metadata_program.to_account_info(),
         ctx.accounts.token_program.to_account_info(),
         ctx.accounts.system_program.to_account_info(),
@@ -539,7 +550,7 @@ pub fn handle_mint_nft<'info>(
         ctx.accounts.master_edition.to_account_info(),
         ctx.accounts.mint.to_account_info(),
         ctx.accounts.mint_authority.to_account_info(),
-        ctx.accounts.payer.to_account_info(),
+        ctx.accounts.whitelisted_address.to_account_info(),
         ctx.accounts.metadata.to_account_info(),
         ctx.accounts.token_metadata_program.to_account_info(),
         ctx.accounts.token_program.to_account_info(),
@@ -553,7 +564,7 @@ pub fn handle_mint_nft<'info>(
             ctx.accounts.metadata.key(),
             ctx.accounts.mint.key(),
             ctx.accounts.mint_authority.key(),
-            ctx.accounts.payer.key(),
+            ctx.accounts.whitelisted_address.key(),
             magic_hat_creator.key(),
             config_line.name,
             magic_hat.data.symbol.clone(),
@@ -576,7 +587,7 @@ pub fn handle_mint_nft<'info>(
             magic_hat_creator.key(),
             ctx.accounts.mint_authority.key(),
             ctx.accounts.metadata.key(),
-            ctx.accounts.payer.key(),
+            ctx.accounts.whitelisted_address.key(),
             Some(magic_hat.data.max_supply),
         ),
         master_edition_infos.as_slice(),
@@ -609,6 +620,10 @@ pub fn handle_mint_nft<'info>(
         ],
         &[&authority_seeds],
     )?;
+
+    wallet_whitelist_account
+        .number_of_whitelist_spots
+        .try_sub_assign(1)?;
 
     Ok(())
 }

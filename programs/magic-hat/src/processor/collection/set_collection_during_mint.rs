@@ -4,17 +4,17 @@ use solana_program::{
     program::invoke_signed, sysvar, sysvar::instructions::get_instruction_relative,
 };
 
-use crate::{cmp_pubkeys, CandyMachine, CollectionPDA};
+use crate::{cmp_pubkeys, CollectionPDA, MagicHat};
 
-/// Sets and verifies the collection during a candy machine mint
+/// Sets and verifies the collection during a magic hat mint
 #[derive(Accounts)]
 pub struct SetCollectionDuringMint<'info> {
     #[account(has_one = authority)]
-    candy_machine: Account<'info, CandyMachine>,
+    magic_hat: Account<'info, MagicHat>,
     /// CHECK: account checked in CPI/instruction sysvar
     metadata: UncheckedAccount<'info>,
     payer: Signer<'info>,
-    #[account(mut, seeds = [b"collection".as_ref(), candy_machine.to_account_info().key.as_ref()], bump)]
+    #[account(mut, seeds = [b"collection".as_ref(), magic_hat.to_account_info().key.as_ref()], bump)]
     collection_pda: Account<'info, CollectionPDA>,
     /// CHECK: account constraints checked in account trait
     #[account(address = mpl_token_metadata::id())]
@@ -61,7 +61,7 @@ pub fn handle_set_collection_during_mint(ctx: Context<SetCollectionDuringMint>) 
     let mint_ix_cm = mint_ix_accounts[0].pubkey;
     let mint_ix_metadata = mint_ix_accounts[4].pubkey;
     let signer = mint_ix_accounts[6].pubkey;
-    let candy_key = ctx.accounts.candy_machine.key();
+    let magic_hat_key = ctx.accounts.magic_hat.key();
     let metadata = ctx.accounts.metadata.key();
     let payer = ctx.accounts.payer.key();
 
@@ -69,15 +69,15 @@ pub fn handle_set_collection_during_mint(ctx: Context<SetCollectionDuringMint>) 
         msg!(
             "Signer with pubkey {} does not match the mint ix Signer with pubkey {}",
             mint_ix_cm,
-            candy_key
+            magic_hat_key
         );
         return Ok(());
     }
-    if !cmp_pubkeys(&mint_ix_cm, &candy_key) {
+    if !cmp_pubkeys(&mint_ix_cm, &magic_hat_key) {
         msg!(
-            "Candy Machine with pubkey {} does not match the mint ix Candy Machine with pubkey {}",
+            "Magic hat with pubkey {} does not match the mint ix Magic hat with pubkey {}",
             mint_ix_cm,
-            candy_key
+            magic_hat_key
         );
         return Ok(());
     }
@@ -95,9 +95,9 @@ pub fn handle_set_collection_during_mint(ctx: Context<SetCollectionDuringMint>) 
     if !cmp_pubkeys(&collection_pda.mint, &collection_mint.key()) {
         return Ok(());
     }
-    let seeds = [b"collection".as_ref(), candy_key.as_ref()];
+    let seeds = [b"collection".as_ref(), magic_hat_key.as_ref()];
     let bump = assert_derivation(&crate::id(), &collection_pda.to_account_info(), &seeds)?;
-    let signer_seeds = [b"collection".as_ref(), candy_key.as_ref(), &[bump]];
+    let signer_seeds = [b"collection".as_ref(), magic_hat_key.as_ref(), &[bump]];
     let set_collection_infos = vec![
         ctx.accounts.metadata.to_account_info(),
         collection_pda.to_account_info(),

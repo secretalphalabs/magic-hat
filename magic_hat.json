@@ -3,10 +3,10 @@
   "name": "magic_hat",
   "instructions": [
     {
-      "name": "initializeCandyMachine",
+      "name": "initializemagicHat",
       "accounts": [
         {
-          "name": "candyMachine",
+          "name": "magicHat",
           "isMut": true,
           "isSigner": false
         },
@@ -40,16 +40,16 @@
         {
           "name": "data",
           "type": {
-            "defined": "CandyMachineData"
+            "defined": "magicHatData"
           }
         }
       ]
     },
     {
-      "name": "updateCandyMachine",
+      "name": "updatemagicHat",
       "accounts": [
         {
-          "name": "candyMachine",
+          "name": "magicHat",
           "isMut": true,
           "isSigner": false
         },
@@ -68,7 +68,7 @@
         {
           "name": "data",
           "type": {
-            "defined": "CandyMachineData"
+            "defined": "magicHatData"
           }
         }
       ]
@@ -77,7 +77,7 @@
       "name": "updateAuthority",
       "accounts": [
         {
-          "name": "candyMachine",
+          "name": "magicHat",
           "isMut": true,
           "isSigner": false
         },
@@ -105,7 +105,7 @@
       "name": "addConfigLines",
       "accounts": [
         {
-          "name": "candyMachine",
+          "name": "magicHat",
           "isMut": true,
           "isSigner": false
         },
@@ -134,7 +134,7 @@
       "name": "setCollection",
       "accounts": [
         {
-          "name": "candyMachine",
+          "name": "magicHat",
           "isMut": true,
           "isSigner": false
         },
@@ -195,7 +195,7 @@
       "name": "removeCollection",
       "accounts": [
         {
-          "name": "candyMachine",
+          "name": "magicHat",
           "isMut": true,
           "isSigner": false
         },
@@ -236,12 +236,12 @@
       "name": "mintNft",
       "accounts": [
         {
-          "name": "candyMachine",
+          "name": "magicHat",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "candyMachineCreator",
+          "name": "magicHatCreator",
           "isMut": false,
           "isSigner": false
         },
@@ -327,7 +327,7 @@
       "name": "setCollectionDuringMint",
       "accounts": [
         {
-          "name": "candyMachine",
+          "name": "magicHat",
           "isMut": false,
           "isSigner": false
         },
@@ -388,7 +388,7 @@
       "name": "withdrawFunds",
       "accounts": [
         {
-          "name": "candyMachine",
+          "name": "magicHat",
           "isMut": true,
           "isSigner": false
         },
@@ -403,7 +403,7 @@
   ],
   "accounts": [
     {
-      "name": "CandyMachine",
+      "name": "magicHat",
       "type": {
         "kind": "struct",
         "fields": [
@@ -428,7 +428,7 @@
           {
             "name": "data",
             "type": {
-              "defined": "CandyMachineData"
+              "defined": "magicHatData"
             }
           }
         ]
@@ -444,7 +444,7 @@
             "type": "publicKey"
           },
           {
-            "name": "candyMachine",
+            "name": "magicHat",
             "type": "publicKey"
           }
         ]
@@ -453,7 +453,7 @@
   ],
   "types": [
     {
-      "name": "CandyMachineData",
+      "name": "magicHatData",
       "type": {
         "kind": "struct",
         "fields": [
@@ -719,7 +719,7 @@
     {
       "code": 6005,
       "name": "TooManyCreators",
-      "msg": "Can only provide up to 4 creators to candy machine (because candy machine is one)!"
+      "msg": "Can only provide up to 4 creators to magic hat (because magic hat is one)!"
     },
     {
       "code": 6006,
@@ -743,13 +743,13 @@
     },
     {
       "code": 6010,
-      "name": "CandyMachineEmpty",
-      "msg": "Candy machine is empty!"
+      "name": "magicHatEmpty",
+      "msg": "Magic hat is empty!"
     },
     {
       "code": 6011,
-      "name": "CandyMachineNotLive",
-      "msg": "Candy machine is not live!"
+      "name": "magicHatNotLive",
+      "msg": "Magic hat is not live!"
     },
     {
       "code": 6012,
@@ -854,7 +854,7 @@
     {
       "code": 6032,
       "name": "MissingSetCollectionDuringMint",
-      "msg": "Missing set collection during mint IX for Candy Machine with collection set"
+      "msg": "Missing set collection during mint IX for Magic hat with collection set"
     },
     {
       "code": 6033,
@@ -863,8 +863,8 @@
     },
     {
       "code": 6034,
-      "name": "CandyCollectionRequiresRetainAuthority",
-      "msg": "Retain authority must be true for Candy Machines with a collection set"
+      "name": "MagicHatCollectionRequiresRetainAuthority",
+      "msg": "Retain authority must be true for Magic hats with a collection set"
     }
   ],
   "metadata": {

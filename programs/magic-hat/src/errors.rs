@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 
 #[error_code]
-pub enum CandyError {
+pub enum MagicHatError {
     #[msg("Account does not have correct owner!")]
     IncorrectOwner,
     #[msg("Account is not initialized!")]
@@ -12,7 +12,7 @@ pub enum CandyError {
     IndexGreaterThanLength,
     #[msg("Numerical overflow error!")]
     NumericalOverflowError,
-    #[msg("Can only provide up to 4 creators to candy machine (because candy machine is one)!")]
+    #[msg("Can only provide up to 4 creators to magic hat (because magic hat is one)!")]
     TooManyCreators,
     #[msg("Uuid must be exactly of 6 length")]
     UuidMustBeExactly6Length,
@@ -22,10 +22,10 @@ pub enum CandyError {
     NotEnoughSOL,
     #[msg("Token transfer failed")]
     TokenTransferFailed,
-    #[msg("Candy machine is empty!")]
-    CandyMachineEmpty,
-    #[msg("Candy machine is not live!")]
-    CandyMachineNotLive,
+    #[msg("Magic hat is empty!")]
+    MagicHatEmpty,
+    #[msg("Magic hat is not live!")]
+    MagicHatNotLive,
     #[msg("Configs that are using hidden uris do not have config lines, they have a single hash representing hashed order")]
     HiddenSettingsConfigsDoNotHaveConfigLines,
     #[msg("Cannot change number of lines unless is a hidden config")]
@@ -66,10 +66,10 @@ pub enum CandyError {
     SlotHashesEmpty,
     #[msg("The metadata account has data in it, and this must be empty to mint a new NFT")]
     MetadataAccountMustBeEmpty,
-    #[msg("Missing set collection during mint IX for Candy Machine with collection set")]
+    #[msg("Missing set collection during mint IX for Magic hat with collection set")]
     MissingSetCollectionDuringMint,
     #[msg("Can't change collection settings after items have begun to be minted")]
     NoChangingCollectionDuringMint,
-    #[msg("Retain authority must be true for Candy Machines with a collection set")]
-    CandyCollectionRequiresRetainAuthority,
+    #[msg("Retain authority must be true for Magic hats with a collection set")]
+    MagicHatCollectionRequiresRetainAuthority,
 }

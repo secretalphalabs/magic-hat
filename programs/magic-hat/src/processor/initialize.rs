@@ -5,16 +5,16 @@ use spl_token::state::Mint;
 use crate::{
     assert_initialized, assert_owned_by, cmp_pubkeys,
     constants::{CONFIG_ARRAY_START, CONFIG_LINE_SIZE},
-    CandyError, CandyMachine, CandyMachineData,
+    MagicHat, MagicHatData, MagicHatError,
 };
 
-/// Create a new candy machine.
+/// Create a new magic hat.
 #[derive(Accounts)]
-#[instruction(data: CandyMachineData)]
-pub struct InitializeCandyMachine<'info> {
+#[instruction(data: MagicHatData)]
+pub struct InitializeMagicHat<'info> {
     /// CHECK: account constraints checked in account trait
-    #[account(zero, rent_exempt = skip, constraint = candy_machine.to_account_info().owner == program_id && candy_machine.to_account_info().data_len() >= get_space_for_candy(data)?)]
-    candy_machine: UncheckedAccount<'info>,
+    #[account(zero, rent_exempt = skip, constraint = magic_hat.to_account_info().owner == program_id && magic_hat.to_account_info().data_len() >= get_space_for_magic_hat(data)?)]
+    magic_hat: UncheckedAccount<'info>,
     /// CHECK: wallet can be any account and is not written to or read
     wallet: UncheckedAccount<'info>,
     /// CHECK: authority can be any account and is not written to or read
@@ -24,17 +24,17 @@ pub struct InitializeCandyMachine<'info> {
     rent: Sysvar<'info, Rent>,
 }
 
-pub fn handle_initialize_candy_machine(
-    ctx: Context<InitializeCandyMachine>,
-    data: CandyMachineData,
+pub fn handle_initialize_magic_hat(
+    ctx: Context<InitializeMagicHat>,
+    data: MagicHatData,
 ) -> Result<()> {
-    let candy_machine_account = &mut ctx.accounts.candy_machine;
+    let magic_hat_account = &mut ctx.accounts.magic_hat;
 
     if data.uuid.len() != 6 {
-        return err!(CandyError::UuidMustBeExactly6Length);
+        return err!(MagicHatError::UuidMustBeExactly6Length);
     }
 
-    let mut candy_machine = CandyMachine {
+    let mut magic_hat = MagicHat {
         data,
         authority: ctx.accounts.authority.key(),
         wallet: ctx.accounts.wallet.key(),
@@ -51,28 +51,27 @@ pub fn handle_initialize_candy_machine(
         assert_owned_by(&ctx.accounts.wallet, &spl_token::id())?;
 
         if !cmp_pubkeys(&token_account.mint, &token_mint_info.key()) {
-            return err!(CandyError::MintMismatch);
+            return err!(MagicHatError::MintMismatch);
         }
 
-        candy_machine.token_mint = Some(*token_mint_info.key);
+        magic_hat.token_mint = Some(*token_mint_info.key);
     }
 
     let mut array_of_zeroes = vec![];
-    while array_of_zeroes.len() < MAX_SYMBOL_LENGTH - candy_machine.data.symbol.len() {
+    while array_of_zeroes.len() < MAX_SYMBOL_LENGTH - magic_hat.data.symbol.len() {
         array_of_zeroes.push(0u8);
     }
-    let new_symbol =
-        candy_machine.data.symbol.clone() + std::str::from_utf8(&array_of_zeroes).unwrap();
-    candy_machine.data.symbol = new_symbol;
+    let new_symbol = magic_hat.data.symbol.clone() + std::str::from_utf8(&array_of_zeroes).unwrap();
+    magic_hat.data.symbol = new_symbol;
 
     // - 1 because we are going to be a creator
-    if candy_machine.data.creators.len() > MAX_CREATOR_LIMIT - 1 {
-        return err!(CandyError::TooManyCreators);
+    if magic_hat.data.creators.len() > MAX_CREATOR_LIMIT - 1 {
+        return err!(MagicHatError::TooManyCreators);
     }
 
-    let mut new_data = CandyMachine::discriminator().try_to_vec().unwrap();
-    new_data.append(&mut candy_machine.try_to_vec().unwrap());
-    let mut data = candy_machine_account.data.borrow_mut();
+    let mut new_data = MagicHat::discriminator().try_to_vec().unwrap();
+    new_data.append(&mut magic_hat.try_to_vec().unwrap());
+    let mut data = magic_hat_account.data.borrow_mut();
     // god forgive me couldnt think of better way to deal with this
     for i in 0..new_data.len() {
         data[i] = new_data[i];
@@ -80,15 +79,14 @@ pub fn handle_initialize_candy_machine(
 
     // only if we are not using hidden settings we will have space for
     // the config lines
-    if candy_machine.data.hidden_settings.is_none() {
-        let vec_start = CONFIG_ARRAY_START
-            + 4
-            + (candy_machine.data.items_available as usize) * CONFIG_LINE_SIZE;
-        let as_bytes = (candy_machine
+    if magic_hat.data.hidden_settings.is_none() {
+        let vec_start =
+            CONFIG_ARRAY_START + 4 + (magic_hat.data.items_available as usize) * CONFIG_LINE_SIZE;
+        let as_bytes = (magic_hat
             .data
             .items_available
             .checked_div(8)
-            .ok_or(CandyError::NumericalOverflowError)? as u32)
+            .ok_or(MagicHatError::NumericalOverflowError)? as u32)
             .to_le_bytes();
         for i in 0..4 {
             data[vec_start + i] = as_bytes[i]
@@ -98,7 +96,7 @@ pub fn handle_initialize_candy_machine(
     Ok(())
 }
 
-fn get_space_for_candy(data: CandyMachineData) -> Result<usize> {
+fn get_space_for_magic_hat(data: MagicHatData) -> Result<usize> {
     let num = if data.hidden_settings.is_some() {
         CONFIG_ARRAY_START
     } else {
@@ -109,7 +107,7 @@ fn get_space_for_candy(data: CandyMachineData) -> Result<usize> {
             + 2 * ((data
                 .items_available
                 .checked_div(8)
-                .ok_or(CandyError::NumericalOverflowError)?
+                .ok_or(MagicHatError::NumericalOverflowError)?
                 + 1) as usize)
     };
 

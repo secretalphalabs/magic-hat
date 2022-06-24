@@ -12,12 +12,12 @@ use solana_program::{
 };
 use spl_associated_token_account::get_associated_token_address;
 
-use crate::{CandyError, CandyMachine};
+use crate::{MagicHat, MagicHatError};
 
 pub fn assert_initialized<T: Pack + IsInitialized>(account_info: &AccountInfo) -> Result<T> {
     let account: T = T::unpack_unchecked(&account_info.data.borrow())?;
     if !account.is_initialized() {
-        Err(CandyError::Uninitialized.into())
+        Err(MagicHatError::Uninitialized.into())
     } else {
         Ok(account)
     }
@@ -30,17 +30,17 @@ pub fn cmp_pubkeys(a: &Pubkey, b: &Pubkey) -> bool {
 pub fn assert_valid_go_live<'info>(
     payer: &Signer<'info>,
     clock: Clock,
-    candy_machine: &Account<'info, CandyMachine>,
+    magic_hat: &Account<'info, MagicHat>,
 ) -> Result<()> {
-    match candy_machine.data.go_live_date {
+    match magic_hat.data.go_live_date {
         None => {
-            if !cmp_pubkeys(payer.key, &candy_machine.authority) {
-                return Err(CandyError::CandyMachineNotLive.into());
+            if !cmp_pubkeys(payer.key, &magic_hat.authority) {
+                return Err(MagicHatError::MagicHatNotLive.into());
             }
         }
         Some(val) => {
-            if clock.unix_timestamp < val && !cmp_pubkeys(payer.key, &candy_machine.authority) {
-                return Err(CandyError::CandyMachineNotLive.into());
+            if clock.unix_timestamp < val && !cmp_pubkeys(payer.key, &magic_hat.authority) {
+                return Err(MagicHatError::MagicHatNotLive.into());
             }
         }
     }
@@ -50,7 +50,7 @@ pub fn assert_valid_go_live<'info>(
 
 pub fn assert_owned_by(account: &AccountInfo, owner: &Pubkey) -> Result<()> {
     if !cmp_pubkeys(account.owner, owner) {
-        Err(CandyError::IncorrectOwner.into())
+        Err(MagicHatError::IncorrectOwner.into())
     } else {
         Ok(())
     }
@@ -104,7 +104,7 @@ pub fn spl_token_transfer(params: TokenTransferParams<'_, '_>) -> Result<()> {
         &signer_seeds,
     );
 
-    result.map_err(|_| CandyError::TokenTransferFailed.into())
+    result.map_err(|_| MagicHatError::TokenTransferFailed.into())
 }
 
 pub fn assert_is_ata(
@@ -122,7 +122,7 @@ pub fn assert_is_ata(
 
 pub fn assert_keys_equal(key1: &Pubkey, key2: &Pubkey) -> Result<()> {
     if !cmp_pubkeys(key1, key2) {
-        err!(CandyError::PublicKeyMismatch)
+        err!(MagicHatError::PublicKeyMismatch)
     } else {
         Ok(())
     }
@@ -173,7 +173,7 @@ pub fn spl_token_burn(params: TokenBurnParams<'_, '_>) -> Result<()> {
         &[source, mint, authority, token_program],
         seeds.as_slice(),
     );
-    result.map_err(|_| CandyError::TokenBurnFailed.into())
+    result.map_err(|_| MagicHatError::TokenBurnFailed.into())
 }
 
 pub fn is_feature_active(uuid: &str, feature_index: usize) -> bool {
@@ -225,14 +225,14 @@ pub fn remove_feature_flag(uuid: &mut String, feature_index: usize) {
 }
 
 pub fn punish_bots<'a>(
-    err: CandyError,
+    err: MagicHatError,
     bot_account: AccountInfo<'a>,
     payment_account: AccountInfo<'a>,
     system_program: AccountInfo<'a>,
     fee: u64,
 ) -> Result<()> {
     msg!(
-        "{}, Candy Machine Botting is taxed at {:?} lamports",
+        "{}, Magic hat Botting is taxed at {:?} lamports",
         err.to_string(),
         fee
     );

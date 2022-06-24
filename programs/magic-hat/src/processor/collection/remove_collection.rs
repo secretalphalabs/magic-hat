@@ -3,17 +3,17 @@ use mpl_token_metadata::{instruction::revoke_collection_authority, state::Metada
 use solana_program::program::invoke;
 
 use crate::{
-    cmp_pubkeys, constants::COLLECTIONS_FEATURE_INDEX, remove_feature_flag, CandyError,
-    CandyMachine, CollectionPDA,
+    cmp_pubkeys, constants::COLLECTIONS_FEATURE_INDEX, remove_feature_flag, CollectionPDA,
+    MagicHat, MagicHatError,
 };
 
-/// Set the collection PDA for the candy machine
+/// Set the collection PDA for the magic hat
 #[derive(Accounts)]
 pub struct RemoveCollection<'info> {
     #[account(mut, has_one = authority)]
-    candy_machine: Account<'info, CandyMachine>,
+    magic_hat: Account<'info, MagicHat>,
     authority: Signer<'info>,
-    #[account(mut, seeds = [b"collection".as_ref(), candy_machine.to_account_info().key.as_ref()], bump, close=authority)]
+    #[account(mut, seeds = [b"collection".as_ref(), magic_hat.to_account_info().key.as_ref()], bump, close=authority)]
     collection_pda: Account<'info, CollectionPDA>,
     /// CHECK: account checked in CPI
     metadata: UncheckedAccount<'info>,
@@ -29,16 +29,16 @@ pub struct RemoveCollection<'info> {
 
 pub fn handle_remove_collection(ctx: Context<RemoveCollection>) -> Result<()> {
     let mint = ctx.accounts.mint.to_account_info();
-    let candy_machine = &mut ctx.accounts.candy_machine;
-    if candy_machine.items_redeemed > 0 {
-        return err!(CandyError::NoChangingCollectionDuringMint);
+    let magic_hat = &mut ctx.accounts.magic_hat;
+    if magic_hat.items_redeemed > 0 {
+        return err!(MagicHatError::NoChangingCollectionDuringMint);
     }
     let metadata: Metadata = Metadata::from_account_info(&ctx.accounts.metadata.to_account_info())?;
     if !cmp_pubkeys(&metadata.update_authority, &ctx.accounts.authority.key()) {
-        return err!(CandyError::IncorrectCollectionAuthority);
+        return err!(MagicHatError::IncorrectCollectionAuthority);
     };
     if !cmp_pubkeys(&metadata.mint, &mint.key()) {
-        return err!(CandyError::MintMismatch);
+        return err!(MagicHatError::MintMismatch);
     }
     let authority_record = ctx.accounts.collection_authority_record.to_account_info();
     let revoke_collection_infos = vec![
@@ -63,6 +63,6 @@ pub fn handle_remove_collection(ctx: Context<RemoveCollection>) -> Result<()> {
         ),
         revoke_collection_infos.as_slice(),
     )?;
-    remove_feature_flag(&mut candy_machine.data.uuid, COLLECTIONS_FEATURE_INDEX);
+    remove_feature_flag(&mut magic_hat.data.uuid, COLLECTIONS_FEATURE_INDEX);
     Ok(())
 }

@@ -1,14 +1,14 @@
 use anchor_lang::prelude::*;
 
-/// Candy machine state and config data.
+/// Magic hat state and config data.
 #[account]
 #[derive(Default, Debug)]
-pub struct CandyMachine {
+pub struct MagicHat {
     pub authority: Pubkey,
     pub wallet: Pubkey,
     pub token_mint: Option<Pubkey>,
     pub items_redeemed: u64,
-    pub data: CandyMachineData,
+    pub data: MagicHatData,
     // there's a borsh vec u32 denoting how many actual lines of data there are currently (eventually equals items available)
     // There is actually lines and lines of data after this but we explicitly never want them deserialized.
     // here there is a borsh vec u32 indicating number of bytes in bitmask array.
@@ -20,12 +20,12 @@ pub struct CandyMachine {
 #[derive(Default, Debug)]
 pub struct CollectionPDA {
     pub mint: Pubkey,
-    pub candy_machine: Pubkey,
+    pub magic_hat: Pubkey,
 }
 
-/// Candy machine settings data.
+/// Magic hat settings data.
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Default, Debug)]
-pub struct CandyMachineData {
+pub struct MagicHatData {
     pub uuid: String,
     pub price: u64,
     /// The symbol for the asset

@@ -8,17 +8,17 @@ use solana_program::program::invoke;
 use crate::{
     cmp_pubkeys,
     constants::{COLLECTIONS_FEATURE_INDEX, COLLECTION_PDA_SIZE},
-    set_feature_flag, CandyError, CandyMachine, CollectionPDA,
+    set_feature_flag, CollectionPDA, MagicHat, MagicHatError,
 };
 
-/// Set the collection PDA for the candy machine
+/// Set the collection PDA for the magic hat
 #[derive(Accounts)]
 pub struct SetCollection<'info> {
     #[account(mut, has_one = authority)]
-    candy_machine: Account<'info, CandyMachine>,
+    magic_hat: Account<'info, MagicHat>,
     authority: Signer<'info>,
     /// CHECK: account constraints checked in account trait
-    #[account(mut, seeds = [b"collection".as_ref(), candy_machine.to_account_info().key.as_ref()], bump)]
+    #[account(mut, seeds = [b"collection".as_ref(), magic_hat.to_account_info().key.as_ref()], bump)]
     collection_pda: UncheckedAccount<'info>,
     payer: Signer<'info>,
     system_program: Program<'info, System>,
@@ -42,19 +42,19 @@ pub fn handle_set_collection(ctx: Context<SetCollection>) -> Result<()> {
     let mint = ctx.accounts.mint.to_account_info();
     let metadata: Metadata = Metadata::from_account_info(&ctx.accounts.metadata.to_account_info())?;
     if !cmp_pubkeys(&metadata.update_authority, &ctx.accounts.authority.key()) {
-        return err!(CandyError::IncorrectCollectionAuthority);
+        return err!(MagicHatError::IncorrectCollectionAuthority);
     };
     if !cmp_pubkeys(&metadata.mint, &mint.key()) {
-        return err!(CandyError::MintMismatch);
+        return err!(MagicHatError::MintMismatch);
     }
     let edition = ctx.accounts.edition.to_account_info();
     let authority_record = ctx.accounts.collection_authority_record.to_account_info();
-    let candy_machine = &mut ctx.accounts.candy_machine;
-    if candy_machine.items_redeemed > 0 {
-        return err!(CandyError::NoChangingCollectionDuringMint);
+    let magic_hat = &mut ctx.accounts.magic_hat;
+    if magic_hat.items_redeemed > 0 {
+        return err!(MagicHatError::NoChangingCollectionDuringMint);
     }
-    if !candy_machine.data.retain_authority {
-        return err!(CandyError::CandyCollectionRequiresRetainAuthority);
+    if !magic_hat.data.retain_authority {
+        return err!(MagicHatError::MagicHatCollectionRequiresRetainAuthority);
     }
     assert_master_edition(&metadata, &edition)?;
     if authority_record.data_is_empty() {
@@ -100,7 +100,7 @@ pub fn handle_set_collection(ctx: Context<SetCollection>) -> Result<()> {
             COLLECTION_PDA_SIZE,
             &[
                 b"collection".as_ref(),
-                candy_machine.key().as_ref(),
+                magic_hat.key().as_ref(),
                 &[*ctx.bumps.get("collection_pda").unwrap()],
             ],
         )?;
@@ -108,8 +108,8 @@ pub fn handle_set_collection(ctx: Context<SetCollection>) -> Result<()> {
     let mut data_ref: &mut [u8] = &mut ctx.accounts.collection_pda.try_borrow_mut_data()?;
     let mut collection_pda_object: CollectionPDA = AnchorDeserialize::deserialize(&mut &*data_ref)?;
     collection_pda_object.mint = mint.key();
-    collection_pda_object.candy_machine = candy_machine.key();
+    collection_pda_object.magic_hat = magic_hat.key();
     collection_pda_object.try_serialize(&mut data_ref)?;
-    set_feature_flag(&mut candy_machine.data.uuid, COLLECTIONS_FEATURE_INDEX);
+    set_feature_flag(&mut magic_hat.data.uuid, COLLECTIONS_FEATURE_INDEX);
     Ok(())
 }

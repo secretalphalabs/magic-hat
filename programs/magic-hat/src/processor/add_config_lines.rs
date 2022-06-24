@@ -6,14 +6,14 @@ use mpl_token_metadata::state::{MAX_NAME_LENGTH, MAX_URI_LENGTH};
 
 use crate::{
     constants::{CONFIG_ARRAY_START, CONFIG_LINE_SIZE},
-    CandyError, CandyMachine, ConfigLine,
+    ConfigLine, MagicHat, MagicHatError,
 };
 
-/// Add multiple config lines to the candy machine.
+/// Add multiple config lines to the magic hat.
 #[derive(Accounts)]
 pub struct AddConfigLines<'info> {
     #[account(mut, has_one = authority)]
-    candy_machine: Account<'info, CandyMachine>,
+    magic_hat: Account<'info, MagicHat>,
     authority: Signer<'info>,
 }
 
@@ -22,18 +22,18 @@ pub fn handle_add_config_lines(
     index: u32,
     config_lines: Vec<ConfigLine>,
 ) -> Result<()> {
-    let candy_machine = &mut ctx.accounts.candy_machine;
-    let account = candy_machine.to_account_info();
+    let magic_hat = &mut ctx.accounts.magic_hat;
+    let account = magic_hat.to_account_info();
     let current_count = get_config_count(&account.data.borrow_mut())?;
     let mut data = account.data.borrow_mut();
     let mut fixed_config_lines = Vec::with_capacity(config_lines.len());
     // No risk overflow because you literally cant store this many in an account
     // going beyond u32 only happens with the hidden store candies, which dont use this.
-    if index > (candy_machine.data.items_available as u32) - 1 {
-        return err!(CandyError::IndexGreaterThanLength);
+    if index > (magic_hat.data.items_available as u32) - 1 {
+        return err!(MagicHatError::IndexGreaterThanLength);
     }
-    if candy_machine.data.hidden_settings.is_some() {
-        return err!(CandyError::HiddenSettingsConfigsDoNotHaveConfigLines);
+    if magic_hat.data.hidden_settings.is_some() {
+        return err!(MagicHatError::HiddenSettingsConfigsDoNotHaveConfigLines);
     }
     for line in &config_lines {
         let array_of_zeroes = vec![0u8; MAX_NAME_LENGTH - line.name.len()];
@@ -55,23 +55,21 @@ pub fn handle_add_config_lines(
 
     array_slice.copy_from_slice(serialized);
 
-    let bit_mask_vec_start = CONFIG_ARRAY_START
-        + 4
-        + (candy_machine.data.items_available as usize) * CONFIG_LINE_SIZE
-        + 4;
+    let bit_mask_vec_start =
+        CONFIG_ARRAY_START + 4 + (magic_hat.data.items_available as usize) * CONFIG_LINE_SIZE + 4;
 
     let mut new_count = current_count;
     for i in 0..fixed_config_lines.len() {
         let position = (index as usize)
             .checked_add(i)
-            .ok_or(CandyError::NumericalOverflowError)?;
+            .ok_or(MagicHatError::NumericalOverflowError)?;
         let my_position_in_vec = bit_mask_vec_start
             + position
                 .checked_div(8)
-                .ok_or(CandyError::NumericalOverflowError)?;
+                .ok_or(MagicHatError::NumericalOverflowError)?;
         let position_from_right = 7 - position
             .checked_rem(8)
-            .ok_or(CandyError::NumericalOverflowError)?;
+            .ok_or(MagicHatError::NumericalOverflowError)?;
         let mask = u8::pow(2, position_from_right as u32);
 
         let old_value_in_vec = data[my_position_in_vec];
@@ -91,7 +89,7 @@ pub fn handle_add_config_lines(
             msg!("Increasing count");
             new_count = new_count
                 .checked_add(1)
-                .ok_or(CandyError::NumericalOverflowError)?;
+                .ok_or(MagicHatError::NumericalOverflowError)?;
         }
     }
 
