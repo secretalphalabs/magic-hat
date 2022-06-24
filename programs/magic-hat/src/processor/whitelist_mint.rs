@@ -8,7 +8,7 @@ use mpl_token_metadata::{
     instruction::{
         create_master_edition_v3, create_metadata_accounts_v2, update_metadata_accounts_v2,
     },
-    state::{MAX_NAME_LENGTH, MAX_URI_LENGTH},
+    state::{MAX_NAME_LENGTH, MAX_URI_LENGTH,},
 };
 use solana_gateway::{
     state::{GatewayTokenAccess, InPlaceGatewayToken},
@@ -29,8 +29,9 @@ use crate::{
     },
     utils::*,
     wallet_whitelist::*,
+    whitelist_config::*,
     ConfigLine, EndSettingType, MagicHat, MagicHatData, MagicHatError, WhitelistMintMode,
-    WhitelistMintSettings,
+    WhitelistMintSettings, 
 };
 
 /// Mint a new NFT pseudo-randomly from the config array.
@@ -45,9 +46,13 @@ pub struct WhitelistMintNFT<'info> {
     #[account(
         mut, 
         has_one = whitelisted_address, 
-        has_one = magic_hat
     )]
-    pub wallet_whitelist_account: Account<'info, WalletWhitelist>,
+    pub wallet_whitelist: Account<'info, WalletWhitelist>,
+    #[account(
+        mut, 
+        has_one = magic_hat_creator, 
+    )]
+    pub whitelist_config: Account<'info, WhitelistConfig>,
 
     /// CHECK: account constraints checked in account trait
     #[account(seeds=[PREFIX.as_bytes(), magic_hat.key().as_ref()], bump=creator_bump)]
@@ -103,7 +108,7 @@ pub fn handle_whitelist_mint_nft<'info>(
     creator_bump: u8,
 ) -> Result<()> {
     let magic_hat = &mut ctx.accounts.magic_hat;
-    let wallet_whitelist_account = &mut ctx.accounts.wallet_whitelist_account;
+    let wallet_whitelist = &mut ctx.accounts.wallet_whitelist;
 
     let magic_hat_creator = &ctx.accounts.magic_hat_creator;
     // Note this is the wallet of the Magic hat
@@ -202,7 +207,8 @@ pub fn handle_whitelist_mint_nft<'info>(
         }
     }
 
-    let mut price = magic_hat.data.price;
+    //let mut price = magic_hat.data.price;
+    let mut price = wallet_whitelist.special_discounted_price;
     if let Some(es) = &magic_hat.data.end_settings {
         match es.end_setting_type {
             EndSettingType::Date => {
@@ -621,9 +627,7 @@ pub fn handle_whitelist_mint_nft<'info>(
         &[&authority_seeds],
     )?;
 
-    wallet_whitelist_account
-        .number_of_whitelist_spots
-        .try_sub_assign(1)?;
+    wallet_whitelist.number_of_whitelist_spots.try_sub_assign(1)?;
 
     Ok(())
 }

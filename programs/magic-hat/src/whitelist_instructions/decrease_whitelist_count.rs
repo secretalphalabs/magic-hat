@@ -6,14 +6,10 @@ use common::*;
 pub struct DecreaseWhitelistSpots<'info> {
     #[account(mut,
         has_one = whitelisted_address,
-        has_one = magic_hat,
         // seeds = [b"wallet-whitelist", wallet_whitelist_account.whitelist_type.to_string().as_bytes() , whitelisted_address.key().as_ref(), magic_hat_id.key().as_ref()], 
         // bump = wallet_whitelist_account.bump
     )]
     pub wallet_whitelist_account: Box<Account<'info, WalletWhitelist>>,
-    /// CHECK:
-    #[account(constraint = wallet_whitelist_account.magic_hat == magic_hat.key())]
-    pub magic_hat: AccountInfo<'info>,
     /// CHECK:
     #[account(constraint = wallet_whitelist_account.whitelisted_address == whitelisted_address.key())]
     pub whitelisted_address: AccountInfo<'info>,

@@ -4,7 +4,7 @@ use std::fmt::Debug;
 
 #[proc_macros::assert_size(4)]
 #[repr(C)]
-#[derive(Debug, Clone, Copy, AnchorDeserialize, AnchorSerialize)]
+#[derive(Debug, Clone, Copy, AnchorDeserialize, AnchorSerialize, PartialEq, PartialOrd)]
 pub enum WLType {
     Four,
     Three,
@@ -18,22 +18,17 @@ impl fmt::Display for WLType {
         write!(f, "{:?}", self)
     }
 }
-impl Default for WLType {
-    fn default() -> Self {
-        WLType::Null
-    }
-}
 
-#[proc_macros::assert_size(120)]
-#[repr(C)]
+#[proc_macros::assert_size(96)]
 #[account]
-#[derive(Default, Debug)]
+#[repr(C)]
+#[derive(Debug)]
 pub struct WalletWhitelist {
-    pub magic_hat: Pubkey,              //32
+    pub magic_hat_creator: Pubkey,      //32
     pub whitelisted_address: Pubkey,    //32
     pub whitelist_type: WLType,         //4
-    pub whitelist_creator: Pubkey,      //32
     pub number_of_whitelist_spots: u64, //8
+    pub special_discounted_price: u64,  //8
     pub bump: u8,                       //1
     _reserved: [u8; 3],                 //3
 }

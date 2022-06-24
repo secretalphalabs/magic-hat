@@ -1,6 +1,6 @@
 [package]
 name = "magic-hat"
-version = "1.0.0"
+version = "1.0.1"
 description = "NFT Magic hat v2: programmatic and trustless NFT drops."
 edition = "2018"
 

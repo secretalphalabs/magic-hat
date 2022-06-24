@@ -8,4 +8,12 @@ pub enum WhitelistErrorCode {
     InvalidNumberofWL,
     #[msg("WLType is invalid.")]
     InvalidWLType,
+    #[msg("WL1 not scheduled.")]
+    WL1NotScheduled,
+    #[msg("WL2 not scheduled.")]
+    WL2NotScheduled,
+    #[msg("WL3 not scheduled.")]
+    WL3NotScheduled,
+    #[msg("WL4 not scheduled.")]
+    WL4NotScheduled,
 }
