@@ -1,6 +1,6 @@
 use crate::whitelist_config::*;
 use anchor_lang::prelude::*;
-use crate::wallet_whitelist::*;
+use crate::wallet_whitelist::WLType;
 
 #[derive(Accounts)]
 pub struct CreateWhitelistConfig<'info> {
@@ -16,7 +16,6 @@ pub struct CreateWhitelistConfig<'info> {
     system_program: Program<'info, System>,
 }
 
-//pub fn handler(ctx: Context<CreateWhitelistConfig>, whitelist_schedule: WhitelistSchedule) -> Result<()> {
 pub fn handler_create_whitelist_config(ctx: Context<CreateWhitelistConfig>, 
             wl_start_time_3_wl_spots: u64, 
             wl_start_time_3_wl_mp: u64, 

@@ -1676,9 +1676,9 @@ dependencies = [
 
 [[package]]
 name = "linked-hash-map"
-version = "0.5.5"
+version = "0.5.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5e22205b752e4f5a3efca12b5fcfaf122112033a5993f51b4427dd3bd4e02085"
+checksum = "0717cef1bc8b636c6e1c1bbdefc09e6322da8a9321966e8928ef80d20f7f770f"
 
 [[package]]
 name = "lock_api"

@@ -1,7 +1,7 @@
 [features]
 seeds = false
 [programs.devnet]
-magic_hat = "5uMGySek8JoKuk6vvfm6hjJmtPJzGnPSdjTvYZNL3YMP"
+magic_hat = "834axB3pTjvun2Q8N3tceXqSQ1TWNzStTj8xrNEc3GxZ"
 
 [registry]
 url = "https://anchor.projectserum.com"

@@ -88,4 +88,6 @@ pub enum MagicHatError {
     WL4NotScheduled,
     #[msg("WL mint not started yet.")]
     WLMintNotStarted,
+    #[msg("No whitelist spots left")]
+    NoWhitelistSpots,
 }

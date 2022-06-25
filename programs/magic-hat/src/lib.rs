@@ -16,7 +16,7 @@ pub use utils::*;
 pub use whitelist_config::*;
 pub use whitelist_config_instructions::*;
 pub use whitelist_instructions::*;
-declare_id!("5uMGySek8JoKuk6vvfm6hjJmtPJzGnPSdjTvYZNL3YMP");
+declare_id!("834axB3pTjvun2Q8N3tceXqSQ1TWNzStTj8xrNEc3GxZ");
 
 #[program]
 pub mod magic_hat {

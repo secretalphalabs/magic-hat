@@ -1219,9 +1219,14 @@
       "code": 6042,
       "name": "WLMintNotStarted",
       "msg": "WL mint not started yet."
+    },
+    {
+      "code": 6043,
+      "name": "NoWhitelistSpots",
+      "msg": "No whitelist spots left"
     }
   ],
   "metadata": {
-    "address": "5uMGySek8JoKuk6vvfm6hjJmtPJzGnPSdjTvYZNL3YMP"
+    "address": "834axB3pTjvun2Q8N3tceXqSQ1TWNzStTj8xrNEc3GxZ"
   }
 }
