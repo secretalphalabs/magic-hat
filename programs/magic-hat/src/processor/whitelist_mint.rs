@@ -6,8 +6,7 @@ use crate::{
         CONFIG_LINE_SIZE, CUPCAKE_ID, EXPIRE_OFFSET, GUMDROP_ID, PREFIX,
     },
     utils::*,
-    ConfigLine, EndSettingType, MagicHat, MagicHatData, MagicHatError, WhitelistMintMode,
-    WhitelistMintSettings,
+    ConfigLine, EndSettingType, MagicHat, MagicHatData, MagicHatError, WhitelistMintSettings,
 };
 use anchor_lang::prelude::*;
 use anchor_spl::token::Token;
@@ -200,7 +199,7 @@ pub fn handle_whitelist_mint_nft<'info>(
     }
 
     //let mut price = magic_hat.data.price;
-    let mut price = wallet_whitelist.discounted_mint_price;
+    let price = wallet_whitelist.discounted_mint_price;
     if let Some(es) = &magic_hat.data.end_settings {
         match es.end_setting_type {
             EndSettingType::Date => {
@@ -306,166 +305,166 @@ pub fn handle_whitelist_mint_nft<'info>(
         }
     }
 
-    if let Some(ws) = &magic_hat.data.whitelist_mint_settings {
-        let whitelist_token_account = &ctx.remaining_accounts[remaining_accounts_counter];
-        remaining_accounts_counter += 1;
-        // If the user has not actually made this account,
-        // this explodes and we just check normal dates.
-        // If they have, we check amount, if it's > 0 we let them use the logic
-        // if 0, check normal dates.
-        match assert_is_ata(
-            whitelist_token_account,
-            &whitelisted_address.key(),
-            &ws.mint,
-        ) {
-            Ok(wta) => {
-                if wta.amount > 0 {
-                    match magic_hat.data.go_live_date {
-                        None => {
-                            if !cmp_pubkeys(
-                                &ctx.accounts.whitelisted_address.key(),
-                                &magic_hat.authority,
-                            ) && !ws.presale
-                            {
-                                punish_bots(
-                                    MagicHatError::MagicHatNotLive,
-                                    whitelisted_address.to_account_info(),
-                                    ctx.accounts.magic_hat.to_account_info(),
-                                    ctx.accounts.system_program.to_account_info(),
-                                    BOT_FEE,
-                                )?;
-                                return Ok(());
-                            }
-                        }
-                        Some(val) => {
-                            if clock.unix_timestamp < val
-                                && !cmp_pubkeys(
-                                    &ctx.accounts.whitelisted_address.key(),
-                                    &magic_hat.authority,
-                                )
-                                && !ws.presale
-                            {
-                                punish_bots(
-                                    MagicHatError::MagicHatNotLive,
-                                    whitelisted_address.to_account_info(),
-                                    ctx.accounts.magic_hat.to_account_info(),
-                                    ctx.accounts.system_program.to_account_info(),
-                                    BOT_FEE,
-                                )?;
-                                return Ok(());
-                            }
-                        }
-                    }
+    // if let Some(ws) = &magic_hat.data.whitelist_mint_settings {
+    //     let whitelist_token_account = &ctx.remaining_accounts[remaining_accounts_counter];
+    //     remaining_accounts_counter += 1;
+    //     // If the user has not actually made this account,
+    //     // this explodes and we just check normal dates.
+    //     // If they have, we check amount, if it's > 0 we let them use the logic
+    //     // if 0, check normal dates.
+    //     match assert_is_ata(
+    //         whitelist_token_account,
+    //         &whitelisted_address.key(),
+    //         &ws.mint,
+    //     ) {
+    //         Ok(wta) => {
+    //             if wta.amount > 0 {
+    //                 match magic_hat.data.go_live_date {
+    //                     None => {
+    //                         if !cmp_pubkeys(
+    //                             &ctx.accounts.whitelisted_address.key(),
+    //                             &magic_hat.authority,
+    //                         ) && !ws.presale
+    //                         {
+    //                             punish_bots(
+    //                                 MagicHatError::MagicHatNotLive,
+    //                                 whitelisted_address.to_account_info(),
+    //                                 ctx.accounts.magic_hat.to_account_info(),
+    //                                 ctx.accounts.system_program.to_account_info(),
+    //                                 BOT_FEE,
+    //                             )?;
+    //                             return Ok(());
+    //                         }
+    //                     }
+    //                     Some(val) => {
+    //                         if clock.unix_timestamp < val
+    //                             && !cmp_pubkeys(
+    //                                 &ctx.accounts.whitelisted_address.key(),
+    //                                 &magic_hat.authority,
+    //                             )
+    //                             && !ws.presale
+    //                         {
+    //                             punish_bots(
+    //                                 MagicHatError::MagicHatNotLive,
+    //                                 whitelisted_address.to_account_info(),
+    //                                 ctx.accounts.magic_hat.to_account_info(),
+    //                                 ctx.accounts.system_program.to_account_info(),
+    //                                 BOT_FEE,
+    //                             )?;
+    //                             return Ok(());
+    //                         }
+    //                     }
+    //                 }
 
-                    if ws.mode == WhitelistMintMode::BurnEveryTime {
-                        let whitelist_token_mint =
-                            &ctx.remaining_accounts[remaining_accounts_counter];
-                        remaining_accounts_counter += 1;
+    //                 if ws.mode == WhitelistMintMode::BurnEveryTime {
+    //                     let whitelist_token_mint =
+    //                         &ctx.remaining_accounts[remaining_accounts_counter];
+    //                     remaining_accounts_counter += 1;
 
-                        let whitelist_burn_authority =
-                            &ctx.remaining_accounts[remaining_accounts_counter];
-                        remaining_accounts_counter += 1;
+    //                     let whitelist_burn_authority =
+    //                         &ctx.remaining_accounts[remaining_accounts_counter];
+    //                     remaining_accounts_counter += 1;
 
-                        let key_check = assert_keys_equal(&whitelist_token_mint.key(), &ws.mint);
+    //                     let key_check = assert_keys_equal(&whitelist_token_mint.key(), &ws.mint);
 
-                        if key_check.is_err() {
-                            punish_bots(
-                                MagicHatError::IncorrectOwner,
-                                whitelisted_address.to_account_info(),
-                                ctx.accounts.magic_hat.to_account_info(),
-                                ctx.accounts.system_program.to_account_info(),
-                                BOT_FEE,
-                            )?;
-                            return Ok(());
-                        }
+    //                     if key_check.is_err() {
+    //                         punish_bots(
+    //                             MagicHatError::IncorrectOwner,
+    //                             whitelisted_address.to_account_info(),
+    //                             ctx.accounts.magic_hat.to_account_info(),
+    //                             ctx.accounts.system_program.to_account_info(),
+    //                             BOT_FEE,
+    //                         )?;
+    //                         return Ok(());
+    //                     }
 
-                        spl_token_burn(TokenBurnParams {
-                            mint: whitelist_token_mint.clone(),
-                            source: whitelist_token_account.clone(),
-                            amount: 1,
-                            authority: whitelist_burn_authority.clone(),
-                            authority_signer_seeds: None,
-                            token_program: token_program.to_account_info(),
-                        })?;
-                    }
+    //                     spl_token_burn(TokenBurnParams {
+    //                         mint: whitelist_token_mint.clone(),
+    //                         source: whitelist_token_account.clone(),
+    //                         amount: 1,
+    //                         authority: whitelist_burn_authority.clone(),
+    //                         authority_signer_seeds: None,
+    //                         token_program: token_program.to_account_info(),
+    //                     })?;
+    //                 }
 
-                    if let Some(dp) = ws.discount_price {
-                        price = dp;
-                    }
-                } else {
-                    if wta.amount == 0 && ws.discount_price.is_none() && !ws.presale {
-                        // A non-presale whitelist with no discount price is a forced whitelist
-                        // If a pre-sale has no discount, its no issue, because the "discount"
-                        // is minting first - a presale whitelist always has an open post sale.
-                        punish_bots(
-                            MagicHatError::NoWhitelistToken,
-                            whitelisted_address.to_account_info(),
-                            ctx.accounts.magic_hat.to_account_info(),
-                            ctx.accounts.system_program.to_account_info(),
-                            BOT_FEE,
-                        )?;
-                        return Ok(());
-                    }
-                    let go_live = assert_valid_go_live(whitelisted_address, clock, magic_hat);
-                    if go_live.is_err() {
-                        punish_bots(
-                            MagicHatError::MagicHatNotLive,
-                            whitelisted_address.to_account_info(),
-                            ctx.accounts.magic_hat.to_account_info(),
-                            ctx.accounts.system_program.to_account_info(),
-                            BOT_FEE,
-                        )?;
-                        return Ok(());
-                    }
-                    if ws.mode == WhitelistMintMode::BurnEveryTime {
-                        remaining_accounts_counter += 2;
-                    }
-                }
-            }
-            Err(_) => {
-                if ws.discount_price.is_none() && !ws.presale {
-                    // A non-presale whitelist with no discount price is a forced whitelist
-                    // If a pre-sale has no discount, its no issue, because the "discount"
-                    // is minting first - a presale whitelist always has an open post sale.
-                    punish_bots(
-                        MagicHatError::NoWhitelistToken,
-                        whitelisted_address.to_account_info(),
-                        ctx.accounts.magic_hat.to_account_info(),
-                        ctx.accounts.system_program.to_account_info(),
-                        BOT_FEE,
-                    )?;
-                    return Ok(());
-                }
-                if ws.mode == WhitelistMintMode::BurnEveryTime {
-                    remaining_accounts_counter += 2;
-                }
-                let go_live = assert_valid_go_live(whitelisted_address, clock, magic_hat);
-                if go_live.is_err() {
-                    punish_bots(
-                        MagicHatError::MagicHatNotLive,
-                        whitelisted_address.to_account_info(),
-                        ctx.accounts.magic_hat.to_account_info(),
-                        ctx.accounts.system_program.to_account_info(),
-                        BOT_FEE,
-                    )?;
-                    return Ok(());
-                }
-            }
-        }
-    } else {
-        // no whitelist means normal datecheck
-        let go_live = assert_valid_go_live(whitelisted_address, clock, magic_hat);
-        if go_live.is_err() {
-            punish_bots(
-                MagicHatError::MagicHatNotLive,
-                whitelisted_address.to_account_info(),
-                ctx.accounts.magic_hat.to_account_info(),
-                ctx.accounts.system_program.to_account_info(),
-                BOT_FEE,
-            )?;
-            return Ok(());
-        }
-    }
+    //                 if let Some(dp) = ws.discount_price {
+    //                     price = dp;
+    //                 }
+    //             } else {
+    //                 if wta.amount == 0 && ws.discount_price.is_none() && !ws.presale {
+    //                     // A non-presale whitelist with no discount price is a forced whitelist
+    //                     // If a pre-sale has no discount, its no issue, because the "discount"
+    //                     // is minting first - a presale whitelist always has an open post sale.
+    //                     punish_bots(
+    //                         MagicHatError::NoWhitelistToken,
+    //                         whitelisted_address.to_account_info(),
+    //                         ctx.accounts.magic_hat.to_account_info(),
+    //                         ctx.accounts.system_program.to_account_info(),
+    //                         BOT_FEE,
+    //                     )?;
+    //                     return Ok(());
+    //                 }
+    //                 let go_live = assert_valid_go_live(whitelisted_address, clock, magic_hat);
+    //                 if go_live.is_err() {
+    //                     punish_bots(
+    //                         MagicHatError::MagicHatNotLive,
+    //                         whitelisted_address.to_account_info(),
+    //                         ctx.accounts.magic_hat.to_account_info(),
+    //                         ctx.accounts.system_program.to_account_info(),
+    //                         BOT_FEE,
+    //                     )?;
+    //                     return Ok(());
+    //                 }
+    //                 if ws.mode == WhitelistMintMode::BurnEveryTime {
+    //                     remaining_accounts_counter += 2;
+    //                 }
+    //             }
+    //         }
+    //         Err(_) => {
+    //             if ws.discount_price.is_none() && !ws.presale {
+    //                 // A non-presale whitelist with no discount price is a forced whitelist
+    //                 // If a pre-sale has no discount, its no issue, because the "discount"
+    //                 // is minting first - a presale whitelist always has an open post sale.
+    //                 punish_bots(
+    //                     MagicHatError::NoWhitelistToken,
+    //                     whitelisted_address.to_account_info(),
+    //                     ctx.accounts.magic_hat.to_account_info(),
+    //                     ctx.accounts.system_program.to_account_info(),
+    //                     BOT_FEE,
+    //                 )?;
+    //                 return Ok(());
+    //             }
+    //             if ws.mode == WhitelistMintMode::BurnEveryTime {
+    //                 remaining_accounts_counter += 2;
+    //             }
+    //             let go_live = assert_valid_go_live(whitelisted_address, clock, magic_hat);
+    //             if go_live.is_err() {
+    //                 punish_bots(
+    //                     MagicHatError::MagicHatNotLive,
+    //                     whitelisted_address.to_account_info(),
+    //                     ctx.accounts.magic_hat.to_account_info(),
+    //                     ctx.accounts.system_program.to_account_info(),
+    //                     BOT_FEE,
+    //                 )?;
+    //                 return Ok(());
+    //             }
+    //         }
+    //     }
+    // } else {
+    //     // no whitelist means normal datecheck
+    //     let go_live = assert_valid_go_live(whitelisted_address, clock, magic_hat);
+    //     if go_live.is_err() {
+    //         // punish_bots(
+    //         //     MagicHatError::MagicHatNotLive,
+    //         //     whitelisted_address.to_account_info(),
+    //         //     ctx.accounts.magic_hat.to_account_info(),
+    //         //     ctx.accounts.system_program.to_account_info(),
+    //         //     BOT_FEE,
+    //         // )?;
+    //         return Ok(());
+    //     }
+    // }
 
     if magic_hat.items_redeemed >= magic_hat.data.items_available {
         punish_bots(
