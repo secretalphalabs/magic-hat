@@ -533,6 +533,22 @@
       ]
     },
     {
+      "name": "deleteWhitelistAccount",
+      "accounts": [
+        {
+          "name": "walletWhitelist",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "magicHatCreator",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "createWhitelistConfig",
       "accounts": [
         {
@@ -549,6 +565,75 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "wlStartTime3WlSpots",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime3WlMp",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime3WlSt",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime2WlSpots",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime2WlMp",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime2WlSt",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime1WlSpots",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime1WlMp",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime1WlSt",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "deleteWhitelistConfig",
+      "accounts": [
+        {
+          "name": "whitelistConfig",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "magicHatCreator",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "updateWhitelistConfig",
+      "accounts": [
+        {
+          "name": "whitelistConfig",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "magicHatCreator",
+          "isMut": false,
+          "isSigner": true
         }
       ],
       "args": [

@@ -85,6 +85,10 @@ pub mod magic_hat {
         handler_create_whitelist_account(ctx, whitelist_type)
     }
 
+    pub fn delete_whitelist_account(ctx: Context<DeleteWhitelistAccount>) -> Result<()> {
+        handle_delete_whitelist_account(ctx)
+    }
+
     pub fn create_whitelist_config(
         ctx: Context<CreateWhitelistConfig>,
         wl_start_time_3_wl_spots: u64,
@@ -98,6 +102,36 @@ pub mod magic_hat {
         wl_start_time_1_wl_st: u64,
     ) -> Result<()> {
         handler_create_whitelist_config(
+            ctx,
+            wl_start_time_3_wl_spots,
+            wl_start_time_3_wl_mp,
+            wl_start_time_3_wl_st,
+            wl_start_time_2_wl_spots,
+            wl_start_time_2_wl_mp,
+            wl_start_time_2_wl_st,
+            wl_start_time_1_wl_spots,
+            wl_start_time_1_wl_mp,
+            wl_start_time_1_wl_st,
+        )
+    }
+
+    pub fn delete_whitelist_config(ctx: Context<DeleteWhitelistConfig>) -> Result<()> {
+        handle_delete_whitelist_config(ctx)
+    }
+
+    pub fn update_whitelist_config(
+        ctx: Context<UpdateWhitelistConfig>,
+        wl_start_time_3_wl_spots: u64,
+        wl_start_time_3_wl_mp: u64,
+        wl_start_time_3_wl_st: u64,
+        wl_start_time_2_wl_spots: u64,
+        wl_start_time_2_wl_mp: u64,
+        wl_start_time_2_wl_st: u64,
+        wl_start_time_1_wl_spots: u64,
+        wl_start_time_1_wl_mp: u64,
+        wl_start_time_1_wl_st: u64,
+    ) -> Result<()> {
+        handler_update_whitelist_config(
             ctx,
             wl_start_time_3_wl_spots,
             wl_start_time_3_wl_mp,
