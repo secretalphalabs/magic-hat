@@ -41,9 +41,9 @@ pub struct WhitelistMintNFT<'info> {
     has_one = wallet
     )]
     magic_hat: Box<Account<'info, MagicHat>>,
-    #[account(mut ,has_one = whitelisted_address )]
+    #[account(mut)]
     wallet_whitelist: Account<'info, WalletWhitelist>,
-    whitelisted_address: Signer<'info>,
+    //whitelisted_address: Signer<'info>,
     /// CHECK: account constraints checked in account trait
     #[account(seeds=[PREFIX.as_bytes(), magic_hat.key().as_ref()], bump=creator_bump_wl)]
     magic_hat_creator: UncheckedAccount<'info>,

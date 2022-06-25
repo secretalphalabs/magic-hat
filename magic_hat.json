@@ -337,11 +337,6 @@
           "isSigner": false
         },
         {
-          "name": "whitelistedAddress",
-          "isMut": false,
-          "isSigner": true
-        },
-        {
           "name": "magicHatCreator",
           "isMut": false,
           "isSigner": false
