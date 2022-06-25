@@ -1,11 +1,25 @@
-use common::*;
-use std::ops::Deref;
+use std::{cell::RefMut, ops::Deref};
 
+use crate::{
+    constants::{
+        A_TOKEN, BLOCK_HASHES, BOT_FEE, COLLECTIONS_FEATURE_INDEX, CONFIG_ARRAY_START,
+        CONFIG_LINE_SIZE, CUPCAKE_ID, EXPIRE_OFFSET, GUMDROP_ID, PREFIX,
+    },
+    utils::*,
+    ConfigLine, EndSettingType, MagicHat, MagicHatData, MagicHatError, WhitelistMintMode,
+    WhitelistMintSettings,
+};
 use anchor_lang::prelude::*;
 use anchor_spl::token::Token;
 use arrayref::array_ref;
-use mpl_token_metadata::instruction::{
-    create_master_edition_v3, create_metadata_accounts_v2, update_metadata_accounts_v2,
+
+use crate::wallet_whitelist::*;
+use common::*;
+use mpl_token_metadata::{
+    instruction::{
+        create_master_edition_v3, create_metadata_accounts_v2, update_metadata_accounts_v2,
+    },
+    state::{MAX_NAME_LENGTH, MAX_URI_LENGTH},
 };
 use solana_gateway::{
     state::{GatewayTokenAccess, InPlaceGatewayToken},
@@ -18,19 +32,6 @@ use solana_program::{
     system_instruction, sysvar,
     sysvar::{instructions::get_instruction_relative, SysvarId},
 };
-
-use crate::{
-    constants::{
-        A_TOKEN, BLOCK_HASHES, BOT_FEE, COLLECTIONS_FEATURE_INDEX, CUPCAKE_ID, EXPIRE_OFFSET,
-        GUMDROP_ID, PREFIX,
-    },
-    get_config_line,
-    utils::*,
-    wallet_whitelist::*,
-    EndSettingType, MagicHat, MagicHatData, MagicHatError, WhitelistMintMode,
-    WhitelistMintSettings,
-};
-
 /// Mint a new NFT pseudo-randomly from the config array.
 #[derive(Accounts)]
 #[instruction(creator_bump_wl: u8)]
@@ -621,4 +622,141 @@ pub fn handle_whitelist_mint_nft<'info>(
         .try_sub_assign(1)?;
 
     Ok(())
+}
+
+pub fn get_good_index(
+    arr: &mut RefMut<&mut [u8]>,
+    items_available: usize,
+    index: usize,
+    pos: bool,
+) -> Result<(usize, bool)> {
+    let mut index_to_use = index;
+    let mut taken = 1;
+    let mut found = false;
+    let bit_mask_vec_start = CONFIG_ARRAY_START
+        + 4
+        + (items_available) * CONFIG_LINE_SIZE
+        + 4
+        + items_available
+            .checked_div(8)
+            .ok_or(MagicHatError::NumericalOverflowError)?
+        + 4;
+
+    while taken > 0 && index_to_use < items_available {
+        let my_position_in_vec = bit_mask_vec_start
+            + index_to_use
+                .checked_div(8)
+                .ok_or(MagicHatError::NumericalOverflowError)?;
+        if arr[my_position_in_vec] == 255 {
+            let eight_remainder = 8 - index_to_use
+                .checked_rem(8)
+                .ok_or(MagicHatError::NumericalOverflowError)?;
+            let reversed = 8 - eight_remainder + 1;
+            if (eight_remainder != 0 && pos) || (reversed != 0 && !pos) {
+                if pos {
+                    index_to_use += eight_remainder;
+                } else {
+                    if index_to_use < 8 {
+                        break;
+                    }
+                    index_to_use -= reversed;
+                }
+            } else if pos {
+                index_to_use += 8;
+            } else {
+                index_to_use -= 8;
+            }
+        } else {
+            let position_from_right = 7 - index_to_use
+                .checked_rem(8)
+                .ok_or(MagicHatError::NumericalOverflowError)?;
+            let mask = u8::pow(2, position_from_right as u32);
+
+            taken = mask & arr[my_position_in_vec];
+
+            match taken {
+                x if x > 0 => {
+                    if pos {
+                        index_to_use += 1;
+                    } else {
+                        if index_to_use == 0 {
+                            break;
+                        }
+                        index_to_use -= 1;
+                    }
+                }
+                0 => {
+                    found = true;
+                    arr[my_position_in_vec] |= mask;
+                }
+                _ => (),
+            }
+        }
+    }
+    Ok((index_to_use, found))
+}
+
+pub fn get_config_line(
+    a: &Account<'_, MagicHat>,
+    index: usize,
+    mint_number: u64,
+) -> Result<ConfigLine> {
+    if let Some(hs) = &a.data.hidden_settings {
+        return Ok(ConfigLine {
+            name: hs.name.clone() + "#" + &(mint_number + 1).to_string(),
+            uri: hs.uri.clone(),
+        });
+    }
+    let a_info = a.to_account_info();
+
+    let mut arr = a_info.data.borrow_mut();
+
+    let (mut index_to_use, good) =
+        get_good_index(&mut arr, a.data.items_available as usize, index, true)?;
+    if !good {
+        let (index_to_use_new, good_new) =
+            get_good_index(&mut arr, a.data.items_available as usize, index, false)?;
+        index_to_use = index_to_use_new;
+        if !good_new {
+            return err!(MagicHatError::CannotFindUsableConfigLine);
+        }
+    }
+
+    if arr[CONFIG_ARRAY_START + 4 + index_to_use * (CONFIG_LINE_SIZE)] == 1 {
+        return err!(MagicHatError::CannotFindUsableConfigLine);
+    }
+
+    let data_array = &mut arr[CONFIG_ARRAY_START + 4 + index_to_use * (CONFIG_LINE_SIZE)
+        ..CONFIG_ARRAY_START + 4 + (index_to_use + 1) * (CONFIG_LINE_SIZE)];
+
+    let mut name_vec = Vec::with_capacity(MAX_NAME_LENGTH);
+    let mut uri_vec = Vec::with_capacity(MAX_URI_LENGTH);
+
+    #[allow(clippy::needless_range_loop)]
+    for i in 4..4 + MAX_NAME_LENGTH {
+        if data_array[i] == 0 {
+            break;
+        }
+        name_vec.push(data_array[i])
+    }
+
+    #[allow(clippy::needless_range_loop)]
+    for i in 8 + MAX_NAME_LENGTH..8 + MAX_NAME_LENGTH + MAX_URI_LENGTH {
+        if data_array[i] == 0 {
+            break;
+        }
+        uri_vec.push(data_array[i])
+    }
+    let config_line: ConfigLine = ConfigLine {
+        name: match String::from_utf8(name_vec) {
+            Ok(val) => val,
+            Err(_) => return err!(MagicHatError::InvalidString),
+        },
+        uri: match String::from_utf8(uri_vec) {
+            Ok(val) => val,
+            Err(_) => return err!(MagicHatError::InvalidString),
+        },
+    };
+
+    Ok(config_line)
 }
