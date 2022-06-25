@@ -342,7 +342,7 @@
           "isSigner": false
         },
         {
-          "name": "payer",
+          "name": "whitelistedAddress",
           "isMut": false,
           "isSigner": true
         },
