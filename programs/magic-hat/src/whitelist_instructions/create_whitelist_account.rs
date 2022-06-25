@@ -12,10 +12,7 @@ pub struct CreateWhitelistAccount<'info> {
         bump
     )]
     wallet_whitelist: Account<'info, WalletWhitelist>,
-    #[account(has_one = magic_hat_creator
-    //     seeds = [b"whitelist-config".as_ref(), magic_hat_creator.key().as_ref()],
-    //     bump = bump_config,
-    )]
+    #[account(has_one = magic_hat_creator)]
     whitelist_config: Account<'info, WhitelistConfig>,
     /// CHECK:
     whitelisted_address: AccountInfo<'info>,
