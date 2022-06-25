@@ -1002,38 +1002,6 @@
           }
         ]
       }
-    },
-    {
-      "name": "WhitelistErrorCode",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "NotEnoughBalance"
-          },
-          {
-            "name": "InvalidNumberofWL"
-          },
-          {
-            "name": "InvalidWLType"
-          },
-          {
-            "name": "WL1NotScheduled"
-          },
-          {
-            "name": "WL2NotScheduled"
-          },
-          {
-            "name": "WL3NotScheduled"
-          },
-          {
-            "name": "WL4NotScheduled"
-          },
-          {
-            "name": "WLMintNotStarted"
-          }
-        ]
-      }
     }
   ],
   "errors": [
@@ -1211,6 +1179,46 @@
       "code": 6034,
       "name": "MagicHatCollectionRequiresRetainAuthority",
       "msg": "Retain authority must be true for Magic hats with a collection set"
+    },
+    {
+      "code": 6035,
+      "name": "NotEnoughBalance",
+      "msg": "Src Balance < LP Deposit Amount."
+    },
+    {
+      "code": 6036,
+      "name": "InvalidNumberofWL",
+      "msg": "Can't decerease as the count is more than number of available spots."
+    },
+    {
+      "code": 6037,
+      "name": "InvalidWLType",
+      "msg": "WLType is invalid."
+    },
+    {
+      "code": 6038,
+      "name": "WL1NotScheduled",
+      "msg": "WL1 not scheduled."
+    },
+    {
+      "code": 6039,
+      "name": "WL2NotScheduled",
+      "msg": "WL2 not scheduled."
+    },
+    {
+      "code": 6040,
+      "name": "WL3NotScheduled",
+      "msg": "WL3 not scheduled."
+    },
+    {
+      "code": 6041,
+      "name": "WL4NotScheduled",
+      "msg": "WL4 not scheduled."
+    },
+    {
+      "code": 6042,
+      "name": "WLMintNotStarted",
+      "msg": "WL mint not started yet."
     }
   ],
   "metadata": {

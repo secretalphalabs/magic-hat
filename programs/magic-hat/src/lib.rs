@@ -6,7 +6,6 @@ pub mod utils;
 pub mod wallet_whitelist;
 pub mod whitelist_config;
 pub mod whitelist_config_instructions;
-pub mod whitelist_errors;
 pub mod whitelist_instructions;
 
 use anchor_lang::prelude::*;

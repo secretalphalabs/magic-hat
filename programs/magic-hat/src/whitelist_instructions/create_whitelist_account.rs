@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use crate::wallet_whitelist::*;
 use crate::whitelist_config::*;
-use crate::whitelist_errors::WhitelistErrorCode;
+use crate::MagicHatError;
 
 #[derive(Accounts)]
 pub struct CreateWhitelistAccount<'info> {
@@ -53,7 +53,7 @@ pub fn handler_create_whitelist_account(ctx: Context<CreateWhitelistAccount>, wh
             wallet_whitelist.number_of_whitelist_spots_per_user = 0;
             wallet_whitelist.discounted_mint_price = u64::MAX;
             wallet_whitelist.whitelist_mint_start_time = u64::MAX;
-            return Err(error!(WhitelistErrorCode::InvalidWLType))
+            return Err(error!(MagicHatError::InvalidWLType))
         },
     }
     Ok(())

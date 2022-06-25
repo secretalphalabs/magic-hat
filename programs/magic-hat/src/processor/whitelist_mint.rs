@@ -14,7 +14,6 @@ use anchor_spl::token::Token;
 use arrayref::array_ref;
 
 use crate::wallet_whitelist::*;
-use crate::whitelist_errors::WhitelistErrorCode;
 use common::*;
 use mpl_token_metadata::{
     instruction::{
@@ -113,7 +112,7 @@ pub fn handle_whitelist_mint_nft<'info>(
     let instruction_sysvar = instruction_sysvar_account_info.data.borrow();
     let current_ix = get_instruction_relative(0, &instruction_sysvar_account_info).unwrap();
     if clock.unix_timestamp < wallet_whitelist.whitelist_mint_start_time as i64 {
-        return err!(WhitelistErrorCode::WLMintNotStarted);
+        return err!(MagicHatError::WLMintNotStarted);
     }
     if !ctx.accounts.metadata.data_is_empty() {
         return err!(MagicHatError::MetadataAccountMustBeEmpty);
