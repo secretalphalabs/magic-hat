@@ -342,7 +342,7 @@
           "isSigner": false
         },
         {
-          "name": "payer",
+          "name": "whitelistedAddress",
           "isMut": false,
           "isSigner": true
         },
@@ -1207,6 +1207,6 @@
     }
   ],
   "metadata": {
-    "address": "36CVVVqp1xPnoAv4Gh9mEDLbwBbQybnyPfpvnVoKkwru"
+    "address": "APVpqE4aFMU7ikN4Yy1cNcbyEmKegaG1sLX8STjQfvZs"
   }
 }
