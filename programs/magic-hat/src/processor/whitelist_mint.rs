@@ -50,7 +50,7 @@ pub struct WhitelistMintNFT<'info> {
     /// CHECK: account constraints checked in account trait
     #[account(seeds=[PREFIX.as_bytes(), magic_hat.key().as_ref()], bump=creator_bump_wl)]
     magic_hat_creator: UncheckedAccount<'info>,
-    #[account(constraint = whitelisted_address.lamports() > wallet_whitelist.discounted_mint_price)]
+    #[account(constraint = whitelisted_address.lamports() < wallet_whitelist.discounted_mint_price @MagicHatError::NotEnoughSOL)]
     whitelisted_address: Signer<'info>,
     /// CHECK: wallet can be any account and is not written to or read
     #[account(mut)]
