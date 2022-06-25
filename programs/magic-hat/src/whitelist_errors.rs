@@ -16,4 +16,6 @@ pub enum WhitelistErrorCode {
     WL3NotScheduled,
     #[msg("WL4 not scheduled.")]
     WL4NotScheduled,
+    #[msg("WL mint not started yet.")]
+    WLMintNotStarted,
 }

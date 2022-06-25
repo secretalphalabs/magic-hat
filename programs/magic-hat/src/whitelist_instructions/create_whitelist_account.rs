@@ -25,7 +25,6 @@ pub struct CreateWhitelistAccount<'info> {
 }
 
 pub fn handler_create_whitelist_account(ctx: Context<CreateWhitelistAccount>, whitelist_type: String) -> Result<()>{
-    msg!("handler_create_whitelist_account, whitelist_type{}", whitelist_type);
     let wallet_whitelist = &mut ctx.accounts.wallet_whitelist;
     let whitelist_config = &ctx.accounts.whitelist_config;
     wallet_whitelist.magic_hat_creator = ctx.accounts.magic_hat_creator.key();
@@ -33,24 +32,27 @@ pub fn handler_create_whitelist_account(ctx: Context<CreateWhitelistAccount>, wh
     match whitelist_type.as_str() {
         "One" => {
             wallet_whitelist.whitelist_type = WLType::One;
-            wallet_whitelist.number_of_whitelist_spots = 1;
-            wallet_whitelist.special_discounted_price = whitelist_config.whitelist_schedule.wl_start_time_1.mint_price;
+            wallet_whitelist.number_of_whitelist_spots_per_user = 1;
+            wallet_whitelist.discounted_mint_price = whitelist_config.whitelist_schedule.wl_start_time_1.discounted_mint_price;
+            wallet_whitelist.whitelist_mint_start_time = whitelist_config.whitelist_schedule.wl_start_time_1.whitelist_mint_start_time;
         },
         "Two" => {
             wallet_whitelist.whitelist_type = WLType::Two;
-            wallet_whitelist.number_of_whitelist_spots = 2;
-            wallet_whitelist.special_discounted_price = whitelist_config.whitelist_schedule.wl_start_time_2.mint_price;
+            wallet_whitelist.number_of_whitelist_spots_per_user = 2;
+            wallet_whitelist.discounted_mint_price = whitelist_config.whitelist_schedule.wl_start_time_2.discounted_mint_price;
+            wallet_whitelist.whitelist_mint_start_time = whitelist_config.whitelist_schedule.wl_start_time_2.whitelist_mint_start_time;
         },
         "Three" => {
             wallet_whitelist.whitelist_type = WLType::Three;
-            wallet_whitelist.number_of_whitelist_spots = 3;
-            wallet_whitelist.special_discounted_price = whitelist_config.whitelist_schedule.wl_start_time_3.mint_price;
+            wallet_whitelist.number_of_whitelist_spots_per_user = 3;
+            wallet_whitelist.discounted_mint_price = whitelist_config.whitelist_schedule.wl_start_time_3.discounted_mint_price;
+            wallet_whitelist.whitelist_mint_start_time = whitelist_config.whitelist_schedule.wl_start_time_3.whitelist_mint_start_time;
         },
         _ => {
             wallet_whitelist.whitelist_type = WLType::Null;
-            wallet_whitelist.number_of_whitelist_spots = 0;
-            wallet_whitelist.special_discounted_price = u64::MAX;
-        
+            wallet_whitelist.number_of_whitelist_spots_per_user = 0;
+            wallet_whitelist.discounted_mint_price = u64::MAX;
+            wallet_whitelist.whitelist_mint_start_time = u64::MAX;
             return Err(error!(WhitelistErrorCode::InvalidWLType))
         },
     }

@@ -16,9 +16,10 @@ pub enum WLType {
 #[account]
 #[derive(Debug)]
 pub struct WalletWhitelist {
-    pub magic_hat_creator: Pubkey,      //32
-    pub whitelisted_address: Pubkey,    //32
-    pub whitelist_type: WLType,         //4
-    pub number_of_whitelist_spots: u64, //8
-    pub special_discounted_price: u64,  //8
+    pub magic_hat_creator: Pubkey,               //32
+    pub whitelisted_address: Pubkey,             //32
+    pub whitelist_type: WLType,                  //4
+    pub number_of_whitelist_spots_per_user: u64, //8
+    pub discounted_mint_price: u64,              //8
+    pub whitelist_mint_start_time: u64,          //8
 }

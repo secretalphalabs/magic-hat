@@ -14,6 +14,7 @@ use anchor_spl::token::Token;
 use arrayref::array_ref;
 
 use crate::wallet_whitelist::*;
+use crate::whitelist_errors::WhitelistErrorCode;
 use common::*;
 use mpl_token_metadata::{
     instruction::{
@@ -111,6 +112,9 @@ pub fn handle_whitelist_mint_nft<'info>(
     let instruction_sysvar_account_info = instruction_sysvar_account.to_account_info();
     let instruction_sysvar = instruction_sysvar_account_info.data.borrow();
     let current_ix = get_instruction_relative(0, &instruction_sysvar_account_info).unwrap();
+    if clock.unix_timestamp < wallet_whitelist.whitelist_mint_start_time as i64 {
+        return err!(WhitelistErrorCode::WLMintNotStarted);
+    }
     if !ctx.accounts.metadata.data_is_empty() {
         return err!(MagicHatError::MetadataAccountMustBeEmpty);
     }
@@ -197,7 +201,7 @@ pub fn handle_whitelist_mint_nft<'info>(
     }
 
     //let mut price = magic_hat.data.price;
-    let mut price = wallet_whitelist.special_discounted_price;
+    let mut price = wallet_whitelist.discounted_mint_price;
     if let Some(es) = &magic_hat.data.end_settings {
         match es.end_setting_type {
             EndSettingType::Date => {
@@ -636,7 +640,7 @@ pub fn handle_whitelist_mint_nft<'info>(
     )?;
 
     wallet_whitelist
-        .number_of_whitelist_spots
+        .number_of_whitelist_spots_per_user
         .try_sub_assign(1)?;
 
     Ok(())
