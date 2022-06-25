@@ -38,7 +38,7 @@ use solana_program::{
 pub struct WhitelistMintNFT<'info> {
     #[account(
     mut,
-    has_one = wallet
+    has_one = wallet, constraint = magic_hat.to_account_info().owner == program_id
     )]
     magic_hat: Box<Account<'info, MagicHat>>,
     #[account(mut)]
