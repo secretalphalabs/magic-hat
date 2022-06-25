@@ -985,16 +985,16 @@
         "kind": "enum",
         "variants": [
           {
-            "name": "Three"
-          },
-          {
-            "name": "Two"
+            "name": "Null"
           },
           {
             "name": "One"
           },
           {
-            "name": "Null"
+            "name": "Two"
+          },
+          {
+            "name": "Three"
           }
         ]
       }
@@ -1207,6 +1207,6 @@
     }
   ],
   "metadata": {
-    "address": "8TGHbF5yHpbeDjKWzhkehKTXVyymZe1EifjZ36oiueBE"
+    "address": "36CVVVqp1xPnoAv4Gh9mEDLbwBbQybnyPfpvnVoKkwru"
   }
 }

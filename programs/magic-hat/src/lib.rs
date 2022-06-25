@@ -17,7 +17,7 @@ pub use utils::*;
 pub use whitelist_config::*;
 pub use whitelist_config_instructions::*;
 pub use whitelist_instructions::*;
-declare_id!("8TGHbF5yHpbeDjKWzhkehKTXVyymZe1EifjZ36oiueBE");
+declare_id!("36CVVVqp1xPnoAv4Gh9mEDLbwBbQybnyPfpvnVoKkwru");
 
 #[program]
 pub mod magic_hat {
@@ -83,7 +83,7 @@ pub mod magic_hat {
         ctx: Context<CreateWhitelistAccount>,
         whitelist_type: String,
     ) -> Result<()> {
-        whitelist_instructions::create_whitelist_account::handler(ctx, whitelist_type)
+        handler_create_whitelist_account(ctx, whitelist_type)
     }
 
     // pub fn decrease_whitelist_count(ctx: Context<DecreaseWhitelistSpots>, count: u8) -> Result<()> {
@@ -101,7 +101,7 @@ pub mod magic_hat {
         wl_start_time_1_wl_mp: u64,
         wl_start_time_1_wl_st: u64,
     ) -> Result<()> {
-        whitelist_config_instructions::create_whitelist_config::handler(
+        handler_create_whitelist_config(
             ctx,
             wl_start_time_3_wl_spots,
             wl_start_time_3_wl_mp,

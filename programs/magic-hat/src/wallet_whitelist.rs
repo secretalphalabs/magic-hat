@@ -1,26 +1,20 @@
 use anchor_lang::prelude::*;
-use std::fmt;
 use std::fmt::Debug;
 
-#[proc_macros::assert_size(4)]
+//#[proc_macros::assert_size(4)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, AnchorDeserialize, AnchorSerialize, PartialEq, PartialOrd)]
 pub enum WLType {
-    Three,
-    Two,
-    One,
     Null,
+    One,
+    Two,
+    Three,
 }
 
-impl fmt::Display for WLType {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self)
-    }
-}
-
-#[proc_macros::assert_size(88)]
+//#[proc_macros::assert_size(88)]
 #[repr(C)]
 #[account]
+#[derive(Debug)]
 pub struct WalletWhitelist {
     pub magic_hat_creator: Pubkey,      //32
     pub whitelisted_address: Pubkey,    //32

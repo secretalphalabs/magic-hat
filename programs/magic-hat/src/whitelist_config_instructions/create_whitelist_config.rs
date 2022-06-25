@@ -5,10 +5,10 @@ use crate::wallet_whitelist::*;
 #[derive(Accounts)]
 pub struct CreateWhitelistConfig<'info> {
     #[account(init, 
+        payer = magic_hat_creator,
         space = 8 + std::mem::size_of::<WhitelistConfig>(),
         seeds = [b"whitelist-config".as_ref(), magic_hat_creator.key().as_ref()],
         bump,
-        payer = magic_hat_creator
     )]
     whitelist_config: Account<'info, WhitelistConfig>,
     #[account(mut)]
@@ -17,7 +17,7 @@ pub struct CreateWhitelistConfig<'info> {
 }
 
 //pub fn handler(ctx: Context<CreateWhitelistConfig>, whitelist_schedule: WhitelistSchedule) -> Result<()> {
-pub fn handler(ctx: Context<CreateWhitelistConfig>, 
+pub fn handler_create_whitelist_config(ctx: Context<CreateWhitelistConfig>, 
             wl_start_time_3_wl_spots: u64, 
             wl_start_time_3_wl_mp: u64, 
             wl_start_time_3_wl_st: u64,  
@@ -27,6 +27,7 @@ pub fn handler(ctx: Context<CreateWhitelistConfig>,
             wl_start_time_1_wl_spots: u64, 
             wl_start_time_1_wl_mp: u64, 
             wl_start_time_1_wl_st: u64, ) -> Result<()> {
+    msg!("handler_create_whitelist_config");
     let whitelist_schedule =  WhitelistSchedule{
         wl_start_time_3: WhitelistTierConfig{
             whitelist_type: WLType::Three,
@@ -56,5 +57,6 @@ pub fn handler(ctx: Context<CreateWhitelistConfig>,
     whitelist_schedule.verify_schedule_invariants();
     whitelist_config.whitelist_schedule = whitelist_schedule;
     whitelist_config.magic_hat_creator = ctx.accounts.magic_hat_creator.key();
+    msg!("ctx.accounts.magic_hat_creator.key(){}", ctx.accounts.magic_hat_creator.key());
     Ok(())
 }

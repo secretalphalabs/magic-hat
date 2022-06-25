@@ -1,15 +1,16 @@
 use crate::wallet_whitelist::WLType;
 use anchor_lang::prelude::*;
 
-#[proc_macros::assert_size(128)]
+//#[proc_macros::assert_size(128)]
 #[repr(C)]
 #[account]
+#[derive(Debug)]
 pub struct WhitelistConfig {
     pub whitelist_schedule: WhitelistSchedule,
     pub magic_hat_creator: Pubkey, //32
 }
 
-#[proc_macros::assert_size(32)]
+//#[proc_macros::assert_size(32)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, AnchorDeserialize, AnchorSerialize, PartialEq, PartialOrd)]
 pub struct WhitelistTierConfig {
@@ -19,7 +20,7 @@ pub struct WhitelistTierConfig {
     pub start_time: u64,
 }
 
-#[proc_macros::assert_size(96)]
+//#[proc_macros::assert_size(96)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, AnchorDeserialize, AnchorSerialize, PartialEq, PartialOrd)]
 pub struct WhitelistSchedule {
