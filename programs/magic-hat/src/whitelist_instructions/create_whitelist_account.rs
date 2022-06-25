@@ -8,7 +8,7 @@ pub struct CreateWhitelistAccount<'info> {
     #[account(init, 
         payer = magic_hat_creator, 
         space = 8 + std::mem::size_of::<WalletWhitelist>(),
-        seeds = [b"wallet-whitelist".as_ref(), whitelisted_address.key().as_ref()], 
+        seeds = [b"wallet-whitelist".as_ref(), whitelisted_address.key().as_ref(), magic_hat_creator.key().as_ref()], 
         bump
     )]
     wallet_whitelist: Account<'info, WalletWhitelist>,

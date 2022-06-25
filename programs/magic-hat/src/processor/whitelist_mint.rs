@@ -110,6 +110,11 @@ pub fn handle_whitelist_mint_nft<'info>(
     let instruction_sysvar_account_info = instruction_sysvar_account.to_account_info();
     let instruction_sysvar = instruction_sysvar_account_info.data.borrow();
     let current_ix = get_instruction_relative(0, &instruction_sysvar_account_info).unwrap();
+    msg!(
+        "clock.unix_timestamp: {}, wallet_whitelist.whitelist_mint_start_time as i64: {}",
+        clock.unix_timestamp,
+        wallet_whitelist.whitelist_mint_start_time as i64
+    );
     if clock.unix_timestamp < wallet_whitelist.whitelist_mint_start_time as i64 {
         return err!(MagicHatError::WLMintNotStarted);
     }
