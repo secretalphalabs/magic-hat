@@ -16,7 +16,7 @@ pub use utils::*;
 pub use whitelist_config::*;
 pub use whitelist_config_instructions::*;
 pub use whitelist_instructions::*;
-declare_id!("9BA5zgC9wQ3k7ty2Xkpif31Xu4ojbREBettAN3Hg44Bp");
+declare_id!("AGydXrbh2V9RH3h3cDzpws51tRDs2HbTtUXnCkq58bwH");
 
 #[program]
 pub mod magic_hat {
@@ -91,6 +91,9 @@ pub mod magic_hat {
 
     pub fn create_whitelist_config(
         ctx: Context<CreateWhitelistConfig>,
+        wl_start_time_4_wl_spots: u64,
+        wl_start_time_4_wl_mp: u64,
+        wl_start_time_4_wl_st: u64,
         wl_start_time_3_wl_spots: u64,
         wl_start_time_3_wl_mp: u64,
         wl_start_time_3_wl_st: u64,
@@ -103,6 +106,9 @@ pub mod magic_hat {
     ) -> Result<()> {
         handler_create_whitelist_config(
             ctx,
+            wl_start_time_4_wl_spots,
+            wl_start_time_4_wl_mp,
+            wl_start_time_4_wl_st,
             wl_start_time_3_wl_spots,
             wl_start_time_3_wl_mp,
             wl_start_time_3_wl_st,
@@ -121,6 +127,9 @@ pub mod magic_hat {
 
     pub fn update_whitelist_config(
         ctx: Context<UpdateWhitelistConfig>,
+        wl_start_time_4_wl_spots: u64,
+        wl_start_time_4_wl_mp: u64,
+        wl_start_time_4_wl_st: u64,
         wl_start_time_3_wl_spots: u64,
         wl_start_time_3_wl_mp: u64,
         wl_start_time_3_wl_st: u64,
@@ -133,6 +142,9 @@ pub mod magic_hat {
     ) -> Result<()> {
         handler_update_whitelist_config(
             ctx,
+            wl_start_time_4_wl_spots,
+            wl_start_time_4_wl_mp,
+            wl_start_time_4_wl_st,
             wl_start_time_3_wl_spots,
             wl_start_time_3_wl_mp,
             wl_start_time_3_wl_st,

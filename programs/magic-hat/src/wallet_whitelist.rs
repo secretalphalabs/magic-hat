@@ -9,6 +9,7 @@ pub enum WLType {
     One,
     Two,
     Three,
+    Four,
 }
 
 //#[proc_macros::assert_size(88)]

@@ -569,6 +569,18 @@
       ],
       "args": [
         {
+          "name": "wlStartTime4WlSpots",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime4WlMp",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime4WlSt",
+          "type": "u64"
+        },
+        {
           "name": "wlStartTime3WlSpots",
           "type": "u64"
         },
@@ -637,6 +649,18 @@
         }
       ],
       "args": [
+        {
+          "name": "wlStartTime4WlSpots",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime4WlMp",
+          "type": "u64"
+        },
+        {
+          "name": "wlStartTime4WlSt",
+          "type": "u64"
+        },
         {
           "name": "wlStartTime3WlSpots",
           "type": "u64"
@@ -1020,6 +1044,12 @@
         "kind": "struct",
         "fields": [
           {
+            "name": "wlStartTime4",
+            "type": {
+              "defined": "WhitelistTierConfig"
+            }
+          },
+          {
             "name": "wlStartTime3",
             "type": {
               "defined": "WhitelistTierConfig"
@@ -1084,6 +1114,9 @@
           },
           {
             "name": "Three"
+          },
+          {
+            "name": "Four"
           }
         ]
       }
@@ -1312,6 +1345,6 @@
     }
   ],
   "metadata": {
-    "address": "9BA5zgC9wQ3k7ty2Xkpif31Xu4ojbREBettAN3Hg44Bp"
+    "address": "AGydXrbh2V9RH3h3cDzpws51tRDs2HbTtUXnCkq58bwH"
   }
 }

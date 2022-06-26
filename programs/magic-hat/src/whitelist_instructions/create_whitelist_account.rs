@@ -45,6 +45,12 @@ pub fn handler_create_whitelist_account(ctx: Context<CreateWhitelistAccount>, wh
             wallet_whitelist.discounted_mint_price = whitelist_config.whitelist_schedule.wl_start_time_3.discounted_mint_price;
             wallet_whitelist.whitelist_mint_start_time = whitelist_config.whitelist_schedule.wl_start_time_3.whitelist_mint_start_time;
         },
+        "Four" => {
+            wallet_whitelist.whitelist_type = WLType::Four;
+            wallet_whitelist.number_of_whitelist_spots_per_user = 4;
+            wallet_whitelist.discounted_mint_price = whitelist_config.whitelist_schedule.wl_start_time_4.discounted_mint_price;
+            wallet_whitelist.whitelist_mint_start_time = whitelist_config.whitelist_schedule.wl_start_time_4.whitelist_mint_start_time;
+        },
         _ => {
             wallet_whitelist.whitelist_type = WLType::Null;
             wallet_whitelist.number_of_whitelist_spots_per_user = 0;

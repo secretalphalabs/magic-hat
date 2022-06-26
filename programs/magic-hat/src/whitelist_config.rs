@@ -24,6 +24,7 @@ pub struct WhitelistTierConfig {
 #[repr(C)]
 #[derive(Debug, Clone, Copy, AnchorDeserialize, AnchorSerialize, PartialEq, PartialOrd)]
 pub struct WhitelistSchedule {
+    pub wl_start_time_4: WhitelistTierConfig,
     pub wl_start_time_3: WhitelistTierConfig,
     pub wl_start_time_2: WhitelistTierConfig,
     pub wl_start_time_1: WhitelistTierConfig,
