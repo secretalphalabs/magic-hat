@@ -40,17 +40,11 @@ pub struct WhitelistMintNFT<'info> {
     has_one = wallet, constraint = magic_hat.to_account_info().owner == program_id
     )]
     magic_hat: Box<Account<'info, MagicHat>>,
-    #[account(
-        mut, 
-        has_one = whitelisted_address, 
-        has_one = magic_hat_creator,
-        constraint = wallet_whitelist.number_of_whitelist_spots_per_user <= 0 @MagicHatError::NoWhitelistSpots,
-    )]
+    #[account(mut, has_one = whitelisted_address, has_one = magic_hat_creator)]
     wallet_whitelist: Account<'info, WalletWhitelist>,
     /// CHECK: account constraints checked in account trait
     #[account(seeds=[PREFIX.as_bytes(), magic_hat.key().as_ref()], bump=creator_bump_wl)]
     magic_hat_creator: UncheckedAccount<'info>,
-    #[account(constraint = whitelisted_address.lamports() < wallet_whitelist.discounted_mint_price @MagicHatError::NotEnoughSOL)]
     whitelisted_address: Signer<'info>,
     /// CHECK: wallet can be any account and is not written to or read
     #[account(mut)]
@@ -119,7 +113,9 @@ pub fn handle_whitelist_mint_nft<'info>(
     let instruction_sysvar_account_info = instruction_sysvar_account.to_account_info();
     let instruction_sysvar = instruction_sysvar_account_info.data.borrow();
     let current_ix = get_instruction_relative(0, &instruction_sysvar_account_info).unwrap();
-    
+    if wallet_whitelist.number_of_whitelist_spots_per_user <= 0 {
+        return err!(MagicHatError::NoWhitelistSpots);
+    }
     if !ctx.accounts.metadata.data_is_empty() {
         return err!(MagicHatError::MetadataAccountMustBeEmpty);
     }
