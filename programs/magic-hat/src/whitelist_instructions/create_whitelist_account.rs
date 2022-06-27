@@ -2,6 +2,9 @@ use anchor_lang::prelude::*;
 use crate::wallet_whitelist::*;
 use crate::whitelist_config::*;
 use crate::MagicHatError;
+use crate::constants::MAGIC_HAT_CREATOR_WALLET;
+use std::str::FromStr;
+
 
 #[derive(Accounts)]
 pub struct CreateWhitelistAccount<'info> {
@@ -16,7 +19,7 @@ pub struct CreateWhitelistAccount<'info> {
     whitelist_config: Account<'info, WhitelistConfig>,
     /// CHECK:
     whitelisted_address: AccountInfo<'info>,
-    #[account(mut, address = whitelist_config.magic_hat_creator)]
+    #[account(mut, address = Pubkey::from_str(MAGIC_HAT_CREATOR_WALLET).unwrap())]
     magic_hat_creator: Signer<'info>,
     system_program: Program<'info, System>,
 }

@@ -1,6 +1,8 @@
 use crate::whitelist_config::*;
 use anchor_lang::prelude::*;
 use crate::wallet_whitelist::WLType;
+use std::str::FromStr;
+use crate::constants::MAGIC_HAT_CREATOR_WALLET;
 
 #[derive(Accounts)]
 pub struct CreateWhitelistConfig<'info> {
@@ -11,7 +13,7 @@ pub struct CreateWhitelistConfig<'info> {
         bump,
     )]
     whitelist_config: Account<'info, WhitelistConfig>,
-    #[account(mut)]
+    #[account(mut, address = Pubkey::from_str(MAGIC_HAT_CREATOR_WALLET).unwrap())]
     magic_hat_creator: Signer<'info>,
     system_program: Program<'info, System>,
 }
@@ -35,7 +37,8 @@ pub fn handler_create_whitelist_config(ctx: Context<CreateWhitelistConfig>,
             number_of_whitelist_spots_total: wl_start_time_4_wl_spots,
             discounted_mint_price: wl_start_time_4_wl_mp,
             whitelist_mint_start_time: wl_start_time_4_wl_st,
-        },wl_start_time_3: WhitelistTierConfig{
+        },
+        wl_start_time_3: WhitelistTierConfig{
             whitelist_type: WLType::Three,
             number_of_whitelist_spots_total: wl_start_time_3_wl_spots,
             discounted_mint_price: wl_start_time_3_wl_mp,
