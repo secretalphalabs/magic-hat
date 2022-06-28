@@ -1,14 +1,14 @@
 [features]
 seeds = false
 [programs.devnet]
-magic_hat = "AGydXrbh2V9RH3h3cDzpws51tRDs2HbTtUXnCkq58bwH"
+magic_hat = "JBw14YzhNTQGqUX54MatDgxDrCPopKf4EGcJHoHfq5ha"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
 cluster = "https://metaplex.devnet.rpcpool.com/"
-wallet = "/home/abstracted/solana-wallet/dev1.json"
+wallet = "/Users/secretalpha/.config/solana/id.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
