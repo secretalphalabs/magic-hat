@@ -1,13 +1,13 @@
 [features]
 seeds = false
-[programs.devnet]
+[programs.mainnet]
 magic_hat = "JBw14YzhNTQGqUX54MatDgxDrCPopKf4EGcJHoHfq5ha"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "https://metaplex.devnet.rpcpool.com/"
+cluster = "https://divine-red-log.solana-mainnet.quiknode.pro/845d436cae5ad412a6814c973117f8903048092a/"
 wallet = "/Users/secretalpha/.config/solana/id.json"
 
 [scripts]
